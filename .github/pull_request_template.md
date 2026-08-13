@@ -5,8 +5,8 @@
 e.g. "Hotfix of npm crash (#21)"
 -->
 
-## Mandatory Process Checklist
-<!-- Please reconsider submitting the pull request if any of the non-optional points cannot be met. -->
+## Mandatory Checklist
+<!-- All points should be met before submitting a Pull Request. This checklist is denoted as tasks in Github. -->
 <!-- To denote a completed checkbox, replace "[ ]" with "[x]". -->
 
 - [ ] The latest commit of my PR runs without crashing
@@ -15,8 +15,8 @@ e.g. "Hotfix of npm crash (#21)"
 - [ ] This PR branch has been rebased onto the `main` of the original repository
 - [ ] All code changes have been checked through SonarLint, as per assignment specifications
 
-- [ ] \(Optional) If any code has been added, there are tests to assert these changes 
-- [ ] \(Optional) The documentation has been changed to reflect changed code, if any
+- [x] \(Optional) If any code has been added, there are tests to assert these changes 
+- [x] \(Optional) The documentation has been changed to reflect changed code, if any
 
 ## Issue Addressed
 <!-- Please use closing keywords and reference the issue number, e.g. "Closes #12." -->
