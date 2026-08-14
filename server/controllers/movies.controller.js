@@ -1,5 +1,4 @@
-
-const randRange = 500
+const randRange = 500 // TMDB defined max page limit
 const randomUrl = 'https://api.themoviedb.org/3/discover/movie?page=1&vote_average.gte=0';
 
 /**
@@ -9,6 +8,7 @@ const randomUrl = 'https://api.themoviedb.org/3/discover/movie?page=1&vote_avera
  * @returns A random value between min and max
  */
 const randInt = (min, max) => {
+    // justifiable pseudorandom usage, no security implications via use
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
