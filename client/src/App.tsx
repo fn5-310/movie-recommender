@@ -4,6 +4,7 @@ import SearchBar from "./components/SearchBar.tsx";
 import SearchResultsList from "./components/SearchResultsList.tsx";
 import { searchMovies } from "./api/searchMovies.ts";
 import type { Movie } from "./types/movie.ts";
+import { useNavigate } from "react-router-dom";
 
 function App() {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -13,6 +14,7 @@ function App() {
   const [page, setPage] = useState(1);
   const queryRef = useRef("");
   const abortRef = useRef<AbortController | null>(null);
+  const navigate = useNavigate();
 
   const runSearch = useCallback(async (query: string, page: number) => {
     abortRef.current?.abort();
@@ -30,7 +32,9 @@ function App() {
 
     try {
       const data = await searchMovies(query, page, controller.signal);
-      setMovies((prev) => (page === 1 ? data.results : [...prev, ...data.results]));
+      setMovies((prev) =>
+        page === 1 ? data.results : [...prev, ...data.results],
+      );
       setHasSearched(true);
       setHasMore(data.page < data.totalPages);
       setPage(data.page);
@@ -54,7 +58,7 @@ function App() {
   };
 
   const handleMovieClick = (movie: Movie) => {
-    console.log("Selected movie:", movie);
+    navigate(`/movie/${movie.id}`);
   };
 
   return (
