@@ -1,15 +1,17 @@
 import { useState } from "react"
 import { apiFetch } from "../api"
+import type { Movie } from "../types/movie";
 
 
 export default function RandomButton() {
-    const [data, setData] = useState(null);
+    const [data, setData] = useState<Movie | null>(null);
     const getRandom = async () => {
         try {
             const movieData = await apiFetch("/movies/random");
             setData(movieData)
-        } catch (err) {
-            setData(JSON.stringify(err))
+        } catch (err: unknown) {
+            console.log(JSON.stringify(err));
+            setData(null)
         }
     }
 
