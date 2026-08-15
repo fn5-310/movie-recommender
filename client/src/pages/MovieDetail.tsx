@@ -76,10 +76,66 @@ export default function MovieDetail() {
     );
   }
 
+  const {
+    title,
+    vote_average: voteAverage,
+    release_date: releaseDate,
+    runtime,
+    genres,
+    overview,
+  } = movie;
+
+  let formattedRuntime = "Unknown";
+  if (runtime) {
+    formattedRuntime = `${runtime} min`;
+  }
+
+  // Format the release date
+  let formattedReleaseDate = "Unknown";
+  if (releaseDate) {
+    formattedReleaseDate = releaseDate;
+  }
+
+  // Format the genres
+  let genreNames = "N/A";
+  if (genres && genres.length > 0) {
+    genreNames = genres.map((genre) => genre.name).join(", ");
+  }
+
   //Movie page section
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>Movie data loaded</h1>
+    <div style={{ padding: "2rem", maxWidth: "1000px", margin: "0 auto" }}>
+      <button onClick={() => navigate("/")} style={{ marginBottom: "1rem" }}>
+        ← Back to Search
+      </button>
+
+      <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
+        <div
+          style={{
+            flex: 1,
+            minWidth: 0,
+            overflowWrap: "break-word",
+            lineHeight: "1.6",
+          }}
+        >
+          <h1>{title}</h1>
+          <p>
+            <strong>Rating:</strong>{" "}
+            {voteAverage ? `${voteAverage.toFixed(1)} / 10` : "N/A"}
+          </p>
+          <p>
+            <strong>Release:</strong> {formattedReleaseDate}
+          </p>
+          <p>
+            <strong>Runtime:</strong> {formattedRuntime}
+          </p>
+          <p>
+            <strong>Genres:</strong> {genreNames}
+          </p>
+          <h3>Overview</h3>
+          <p>{overview || "No overview available."}</p>
+        </div>
+      </div>
     </div>
   );
 }
