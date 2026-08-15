@@ -1,27 +1,18 @@
+import { randomInt } from 'node:crypto';
+
 const randRange = 500 // TMDB defined max page limit
 const randomUrl = 'https://api.themoviedb.org/3/discover/movie?page=1&vote_average.gte=0';
-
-/**
- * 
- * @param {int} min The minimum returned integer
- * @param {int} max The maximum returned integer
- * @returns A random value between min and max
- */
-const randInt = (min, max) => {
-    // justifiable pseudorandom usage, no security implications via use
-    return Math.floor(Math.random() * (max - min + 1) + min);
-}
 
 /**
  * Selects a random page given randRange for the TMDB url
  * @returns A populated url with a random number for the page field
  */
 const randomPage = () => {
-    return `https://api.themoviedb.org/3/discover/movie?page=${randInt(1, randRange)}&vote_average.gte=0`
+    return `https://api.themoviedb.org/3/discover/movie?page=${randomInt(1, randRange)}&vote_average.gte=0`
 }
 
 const randomResult = (json) => {
-    return json.results[randInt(0,20)];
+    return json.results[randomInt(0,20)];
 }
 
 export const getRandomMovie = async (_req, res) => {
