@@ -33,6 +33,11 @@ TMDB_ACCESS_TOKEN=insertApiReadAccessTokenHere
 TMDB_KEY=insertApiKeyHere
 ```
 
+Currently we also require a `.env` file for `client/` as well. In `client/.env`:
+```
+VITE_MOVIE_API_KEY=insertApiKeyHere
+```
+
 ### Running the Website
 The dev servers for both the ExpressJS server and React client can be run concurrently through one command:
 ```
