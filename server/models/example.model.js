@@ -1,3 +1,6 @@
+// DEFUNCT CODE - no mongodb implementation
+// keeping for potential later use
+
 import mongoose from 'mongoose';
 
 const exampleSchema = new mongoose.Schema(
