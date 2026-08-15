@@ -4,7 +4,7 @@
 
 .page-container {
   padding: 2rem;
-  max-width: 1000px;
+  max-width: 1800px;
   margin: 0 auto;
 }
 
@@ -20,7 +20,7 @@
 }
 
 .movie-poster {
-  width: 300px;
+  width: 500px;
   height: auto;
   border-radius: 8px;
   object-fit: cover;
@@ -43,6 +43,7 @@
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .cast-card {
