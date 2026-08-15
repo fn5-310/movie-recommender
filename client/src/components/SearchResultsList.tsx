@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import type { Movie } from "../types/movie";
+import "./SearchResultsList.css";
 
 interface SearchResultsListProps {
   movies: Movie[];
@@ -43,7 +44,6 @@ export default function SearchResultsList({
     return () => observer.disconnect();
   }, [handleIntersect]);
 
-  // Empty state: user has searched but nothing came back
   if (hasSearched && !isLoading && movies.length === 0) {
     return (
       <div
@@ -56,7 +56,6 @@ export default function SearchResultsList({
     );
   }
 
-  // Nothing searched yet
   if (!hasSearched && movies.length === 0) {
     return null;
   }
@@ -103,7 +102,6 @@ export default function SearchResultsList({
         </div>
       )}
 
-      {/* Sentinel element for infinite scroll */}
       {hasMore && (
         <div
           ref={sentinelRef}
