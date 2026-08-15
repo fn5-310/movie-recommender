@@ -2,6 +2,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 const TMDB_API_KEY = import.meta.env.VITE_MOVIE_API_KEY;
+const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
+const MAX_CAST_TO_SHOW = 5;
 
 interface CastMember {
   id: number;
@@ -78,11 +80,13 @@ export default function MovieDetail() {
 
   const {
     title,
+    poster_path: posterPath,
     vote_average: voteAverage,
     release_date: releaseDate,
     runtime,
     genres,
     overview,
+    credits,
   } = movie;
 
   let formattedRuntime = "Unknown";
@@ -102,6 +106,16 @@ export default function MovieDetail() {
     genreNames = genres.map((genre) => genre.name).join(", ");
   }
 
+  let posterUrl = "https://via.placeholder.com/300x450?text=No+Poster";
+  if (posterPath) {
+    posterUrl = `${IMAGE_BASE_URL}${posterPath}`;
+  }
+
+  let topCast: CastMember[] = [];
+  if (credits && credits.cast) {
+    topCast = credits.cast.slice(0, MAX_CAST_TO_SHOW);
+  }
+
   //Movie page section
   return (
     <div style={{ padding: "2rem", maxWidth: "1000px", margin: "0 auto" }}>
@@ -110,6 +124,18 @@ export default function MovieDetail() {
       </button>
 
       <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
+        <img
+          src={posterUrl}
+          alt={title}
+          style={{
+            width: "300px",
+            height: "auto",
+            borderRadius: "8px",
+            objectFit: "cover",
+            flexShrink: 0,
+          }}
+        />
+
         <div
           style={{
             flex: 1,
@@ -118,7 +144,15 @@ export default function MovieDetail() {
             lineHeight: "1.6",
           }}
         >
-          <h1>{title}</h1>
+          <h1
+            style={{
+              margin: "0 0 0.5rem 0",
+              lineHeight: 1.2,
+              wordWrap: "break-word",
+            }}
+          >
+            {title}
+          </h1>
           <p>
             <strong>Rating:</strong>{" "}
             {voteAverage ? `${voteAverage.toFixed(1)} / 10` : "N/A"}
@@ -134,6 +168,60 @@ export default function MovieDetail() {
           </p>
           <h3>Overview</h3>
           <p>{overview || "No overview available."}</p>
+
+          <h3>Cast</h3>
+          <div
+            style={{
+              display: "flex",
+              gap: "1rem",
+              flexWrap: "wrap",
+            }}
+          >
+            {topCast.map((actor) => {
+              // Build the avatar URL
+              let avatarUrl =
+                "https://via.placeholder.com/80x120?text=No+Image";
+              if (actor.profile_path) {
+                avatarUrl = `https://image.tmdb.org/t/p/w200${actor.profile_path}`;
+              }
+
+              return (
+                <div
+                  key={actor.id}
+                  style={{ textAlign: "center", width: "80px" }}
+                >
+                  <img
+                    src={avatarUrl}
+                    alt={actor.name}
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                    }}
+                  />
+                  <p
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      margin: "4px 0 0 0",
+                    }}
+                  >
+                    {actor.name}
+                  </p>
+                  <p
+                    style={{
+                      fontSize: "11px",
+                      color: "#666",
+                      margin: "0",
+                    }}
+                  >
+                    {actor.character}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
