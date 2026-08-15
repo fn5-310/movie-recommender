@@ -35,7 +35,7 @@ function App() {
           onMovieClick={handleMovieClick}
         />
       </section>
-      <RandomButton/>
+      <RandomButton onMovieGet={(movie) => console.log(JSON.stringify(movie))}/>
     </>
     
   );

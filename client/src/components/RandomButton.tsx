@@ -1,29 +1,30 @@
-import { useState } from "react"
+import { useState } from "react";
 import { apiFetch } from "../api"
 import type { Movie } from "../types/movie";
 
 
-export default function RandomButton() {
-    const [data, setData] = useState<Movie | null>(null);
+type RandomButtonProps = {
+    readonly onMovieGet?: (movie: Movie) => void;
+}
+
+export default function RandomButton({onMovieGet} : RandomButtonProps) {
+    const [buttonName, setButtonName] = useState("Get Random");
     const getRandom = async () => {
         try {
+            setButtonName("Generating...")
             const movieData = await apiFetch("/movies/random");
-            setData(movieData)
+            // pass hook to user (use movie data outside)
+            onMovieGet?.(movieData);
+            setButtonName("Generated!")
         } catch (err: unknown) {
-            console.log(JSON.stringify(err));
-            setData(null)
+            console.log(err instanceof Error ? err.message : "Something went wrong with RandomButton.");
+            setButtonName("Get Random")
         }
     }
 
     return (
-        <>
-            <button type="button" onClick={getRandom}>
-                Get Random
-            </button>
-            <p>
-                {data ? JSON.stringify(data) : "content"}
-            </p>
-        </>
-        
+        <button type="button" onClick={getRandom}>
+            {buttonName}
+        </button>
     )
 }
