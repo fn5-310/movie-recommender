@@ -43,9 +43,14 @@ export async function searchMovies(
   page: number = 1,
   signal?: AbortSignal,
 ): Promise<SearchMoviesResponse> {
+  if (!API_KEY) {
+    throw new Error(
+      "Missing VITE_MOVIE_API_KEY (set it in client/.env as VITE_MOVIE_API_KEY=... and restart Vite).",
+    );
+  }
+
   const url = new URL(`${API_BASE_URL}/search/movie`);
   url.searchParams.set("api_key", API_KEY);
-  url.searchParams.set("query", query);
   url.searchParams.set("page", String(page));
   url.searchParams.set("include_adult", "false");
 
