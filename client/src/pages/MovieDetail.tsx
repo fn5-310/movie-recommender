@@ -1,8 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import "./MovieDetail.css";
 
 const TMDB_API_KEY = import.meta.env.VITE_MOVIE_API_KEY;
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
+const CAST_IMAGE_BASE = "https://image.tmdb.org/t/p/w200";
+const PLACEHOLDER_POSTER = "https://via.placeholder.com/300x450?text=No+Poster";
+const PLACEHOLDER_AVATAR = "https://via.placeholder.com/80x120?text=No+Image";
 const MAX_CAST_TO_SHOW = 5;
 
 interface CastMember {
@@ -21,9 +25,35 @@ interface MovieDetail {
   runtime: number | null;
   vote_average: number;
   genres: { id: number; name: string }[];
-  credits: {
-    cast: CastMember[];
-  };
+  credits: { cast: CastMember[] };
+}
+
+function CastList({ cast }: { cast: CastMember[] }) {
+  const topCast = cast.slice(0, MAX_CAST_TO_SHOW);
+
+  if (topCast.length === 0) {
+    return <p>No cast information available.</p>;
+  }
+
+  return (
+    <div className="cast-list">
+      {topCast.map((actor) => {
+        let avatarUrl = PLACEHOLDER_AVATAR;
+
+        if (actor.profile_path) {
+          avatarUrl = `${CAST_IMAGE_BASE}${actor.profile_path}`;
+        }
+
+        return (
+          <div key={actor.id} className="cast-card">
+            <img src={avatarUrl} alt={actor.name} className="cast-image" />
+            <p className="cast-name">{actor.name}</p>
+            <p className="cast-character">{actor.character}</p>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 export default function MovieDetail() {
@@ -65,97 +95,68 @@ export default function MovieDetail() {
 
   //loading section
   if (loading) {
-    return <div style={{ padding: "2rem" }}>Loading movie details…</div>;
+    return <div className="message-container">Loading movie details…</div>;
   }
 
   //Error page section
   if (error || !movie) {
     return (
-      <div style={{ padding: "2rem" }}>
+      <div className="message-container">
         <h1>{error || "Movie not found"}</h1>
-        <button onClick={() => navigate("/")}>Go back</button>
+        <button onClick={() => navigate("/")} className="back-button">
+          Go back
+        </button>
       </div>
     );
   }
 
-  const {
-    title,
-    poster_path: posterPath,
-    vote_average: voteAverage,
-    release_date: releaseDate,
-    runtime,
-    genres,
-    overview,
-    credits,
-  } = movie;
-
+  // Format the runtime
   let formattedRuntime = "Unknown";
-  if (runtime) {
-    formattedRuntime = `${runtime} min`;
+  if (movie.runtime) {
+    formattedRuntime = `${movie.runtime} min`;
   }
 
   // Format the release date
   let formattedReleaseDate = "Unknown";
-  if (releaseDate) {
-    formattedReleaseDate = releaseDate;
+  if (movie.release_date) {
+    formattedReleaseDate = movie.release_date;
   }
 
   // Format the genres
   let genreNames = "N/A";
-  if (genres && genres.length > 0) {
-    genreNames = genres.map((genre) => genre.name).join(", ");
+  if (movie.genres && movie.genres.length > 0) {
+    genreNames = movie.genres.map((g) => g.name).join(", ");
   }
 
-  let posterUrl = "https://via.placeholder.com/300x450?text=No+Poster";
-  if (posterPath) {
-    posterUrl = `${IMAGE_BASE_URL}${posterPath}`;
+  let posterUrl = PLACEHOLDER_POSTER;
+  if (movie.poster_path) {
+    posterUrl = `${IMAGE_BASE_URL}${movie.poster_path}`;
   }
 
-  let topCast: CastMember[] = [];
-  if (credits && credits.cast) {
-    topCast = credits.cast.slice(0, MAX_CAST_TO_SHOW);
+  let voteAverageDisplay = "N/A";
+  if (movie.vote_average) {
+    voteAverageDisplay = `${movie.vote_average.toFixed(1)} / 10`;
+  }
+
+  let castData: CastMember[] = [];
+  if (movie.credits && movie.credits.cast) {
+    castData = movie.credits.cast;
   }
 
   //Movie page section
   return (
-    <div style={{ padding: "2rem", maxWidth: "1000px", margin: "0 auto" }}>
-      <button onClick={() => navigate("/")} style={{ marginBottom: "1rem" }}>
+    <div className="page-container">
+      <button onClick={() => navigate("/")} className="back-button">
         ← Back to Search
       </button>
 
-      <div style={{ display: "flex", gap: "2rem", flexWrap: "wrap" }}>
-        <img
-          src={posterUrl}
-          alt={title}
-          style={{
-            width: "300px",
-            height: "auto",
-            borderRadius: "8px",
-            objectFit: "cover",
-            flexShrink: 0,
-          }}
-        />
+      <div className="movie-layout">
+        <img src={posterUrl} alt={movie.title} className="movie-poster" />
 
-        <div
-          style={{
-            flex: 1,
-            minWidth: 0,
-            overflowWrap: "break-word",
-            lineHeight: "1.6",
-          }}
-        >
-          <h1
-            style={{
-              margin: "0 0 0.5rem 0",
-              lineHeight: 1.2,
-              wordWrap: "break-word",
-            }}
-          >
-            {title}
-          </h1>
+        <div className="movie-info">
+          <h1 className="movie-title">{movie.title}</h1>
           <p>
-            <strong>Rating:</strong>{" "}
-            {voteAverage ? `${voteAverage.toFixed(1)} / 10` : "N/A"}
+            <strong>Rating:</strong> {voteAverageDisplay}
           </p>
           <p>
             <strong>Release:</strong> {formattedReleaseDate}
@@ -166,62 +167,12 @@ export default function MovieDetail() {
           <p>
             <strong>Genres:</strong> {genreNames}
           </p>
+
           <h3>Overview</h3>
-          <p>{overview || "No overview available."}</p>
+          <p>{movie.overview || "No overview available."}</p>
 
           <h3>Cast</h3>
-          <div
-            style={{
-              display: "flex",
-              gap: "1rem",
-              flexWrap: "wrap",
-            }}
-          >
-            {topCast.map((actor) => {
-              // Build the avatar URL
-              let avatarUrl =
-                "https://via.placeholder.com/80x120?text=No+Image";
-              if (actor.profile_path) {
-                avatarUrl = `https://image.tmdb.org/t/p/w200${actor.profile_path}`;
-              }
-
-              return (
-                <div
-                  key={actor.id}
-                  style={{ textAlign: "center", width: "80px" }}
-                >
-                  <img
-                    src={avatarUrl}
-                    alt={actor.name}
-                    style={{
-                      width: "80px",
-                      height: "80px",
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                    }}
-                  />
-                  <p
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      margin: "4px 0 0 0",
-                    }}
-                  >
-                    {actor.name}
-                  </p>
-                  <p
-                    style={{
-                      fontSize: "11px",
-                      color: "#666",
-                      margin: "0",
-                    }}
-                  >
-                    {actor.character}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
+          <CastList cast={castData} />
         </div>
       </div>
     </div>
