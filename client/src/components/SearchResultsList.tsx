@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-import { Movie } from "../types/movie";
+import type { Movie } from "../types/movie";
 
 interface SearchResultsListProps {
   movies: Movie[];
@@ -62,11 +62,7 @@ export default function SearchResultsList({
   }
 
   return (
-    <div
-      className="search-results"
-      role="region"
-      aria-label="Search results"
-    >
+    <div className="search-results" role="region" aria-label="Search results">
       <p className="visually-hidden" role="status" aria-live="polite">
         {`${movies.length} result${movies.length === 1 ? "" : "s"} found`}
       </p>

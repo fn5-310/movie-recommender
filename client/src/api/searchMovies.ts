@@ -1,4 +1,4 @@
-import { Movie, SearchMoviesResponse } from "../types/movie";
+import type { Movie, SearchMoviesResponse } from "../types/movie";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w342";
@@ -51,6 +51,7 @@ export async function searchMovies(
 
   const url = new URL(`${API_BASE_URL}/search/movie`);
   url.searchParams.set("api_key", API_KEY);
+  url.searchParams.set("query", query);
   url.searchParams.set("page", String(page));
   url.searchParams.set("include_adult", "false");
 
