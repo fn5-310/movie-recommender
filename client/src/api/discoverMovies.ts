@@ -1,0 +1,88 @@
+import type { Movie, SearchMoviesResponse } from "../types/movie";
+
+const API_BASE_URL = "https://api.themoviedb.org/3";
+const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w342";
+const API_KEY = import.meta.env.VITE_MOVIE_API_KEY;
+
+interface RawMovieResult {
+  id: number;
+  title: string;
+  release_date: string | null;
+  poster_path: string | null;
+  overview: string | null;
+  genre_ids: number[] | null;
+  vote_average: number | null;
+}
+
+interface RawDiscoverResponse {
+  page: number;
+  results: RawMovieResult[];
+  total_pages: number;
+  total_results: number;
+}
+
+function normalizeMovie(raw: RawMovieResult): Movie {
+  return {
+    id: raw.id,
+    title: raw.title,
+    year: raw.release_date ? Number(raw.release_date.slice(0, 4)) : null,
+    posterUrl: raw.poster_path ? `${IMAGE_BASE_URL}${raw.poster_path}` : null,
+    overview: raw.overview ?? "",
+    genreIds: raw.genre_ids ?? [],
+    voteAverage: raw.vote_average ?? null,
+  };
+}
+
+export interface DiscoverFilters {
+  genre?: number;       // TMDB genre ID, not the name
+  yearFrom?: number;
+  yearTo?: number;
+  ratingMin?: number;
+  castId?: number;       // TMDB person ID, resolved from actor name separately
+  sort?: "rating" | "release_date" | "popularity";
+  page?: number;
+}
+
+const SORT_MAP: Record<NonNullable<DiscoverFilters["sort"]>, string> = {
+  rating: "vote_average.desc",
+  release_date: "primary_release_date.desc",
+  popularity: "popularity.desc",
+};
+
+export async function discoverMovies(
+  filters: DiscoverFilters,
+  signal?: AbortSignal,
+): Promise<SearchMoviesResponse> {
+  if (!API_KEY) {
+    throw new Error(
+      "Missing VITE_MOVIE_API_KEY (set it in client/.env as VITE_MOVIE_API_KEY=... and restart Vite).",
+    );
+  }
+
+  const url = new URL(`${API_BASE_URL}/discover/movie`);
+  url.searchParams.set("api_key", API_KEY);
+  url.searchParams.set("include_adult", "false");
+  url.searchParams.set("sort_by", SORT_MAP[filters.sort ?? "popularity"]);
+
+  if (filters.genre) url.searchParams.set("with_genres", String(filters.genre));
+  if (filters.yearFrom) url.searchParams.set("primary_release_date.gte", `${filters.yearFrom}-01-01`);
+  if (filters.yearTo) url.searchParams.set("primary_release_date.lte", `${filters.yearTo}-12-31`);
+  if (filters.ratingMin) url.searchParams.set("vote_average.gte", String(filters.ratingMin));
+  if (filters.castId) url.searchParams.set("with_cast", String(filters.castId));
+  if (filters.page) url.searchParams.set("page", String(filters.page));
+
+  const response = await fetch(url.toString(), { signal });
+
+  if (!response.ok) {
+    throw new Error(`Discover failed with status ${response.status}`);
+  }
+
+  const data: RawDiscoverResponse = await response.json();
+
+  return {
+    results: data.results.map(normalizeMovie),
+    page: data.page,
+    totalPages: data.total_pages,
+    totalResults: data.total_results,
+  };
+}
