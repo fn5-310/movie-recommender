@@ -15,6 +15,11 @@ export default function SearchBar({
 }: SearchBarProps) {
   const [inputValue, setInputValue] = useState("");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const onQueryChangeRef = useRef(onQueryChange);
+
+  useEffect(() => {
+    onQueryChangeRef.current = onQueryChange;
+  }, [onQueryChange]);
 
   useEffect(() => {
     if (debounceRef.current) {
@@ -22,7 +27,7 @@ export default function SearchBar({
     }
 
     debounceRef.current = setTimeout(() => {
-      onQueryChange(inputValue.trim());
+      onQueryChangeRef.current(inputValue.trim());
     }, debounceMs);
 
     return () => {
@@ -30,31 +35,23 @@ export default function SearchBar({
         clearTimeout(debounceRef.current);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputValue, debounceMs]);
 
   return (
-    <div className="search-bar" role="search">
-      <label htmlFor="movie-search-input" className="visually-hidden">
-        Search movies
-      </label>
+    <div className="search-bar">
       <input
-        id="movie-search-input"
-        type="search"
+        type="text"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         placeholder={placeholder}
-        aria-describedby={isLoading ? "movie-search-status" : undefined}
+        aria-label="Search movies"
         className="search-bar__input"
       />
-      <span
-        id="movie-search-status"
-        className={isLoading ? "search-bar__spinner" : "visually-hidden"}
-        role="status"
-        aria-live="polite"
-      >
-        {isLoading ? "Searching..." : ""}
-      </span>
+      {isLoading && (
+        <span className="search-bar__spinner" role="status" aria-live="polite">
+          Searching...
+        </span>
+      )}
     </div>
   );
 }
