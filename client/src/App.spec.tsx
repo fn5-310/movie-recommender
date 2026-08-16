@@ -13,6 +13,10 @@ function renderApp() {
 }
 
 describe("App search integration", () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+  });
+
   it("searches through SearchBar and renders movie result", async () => {
     const user = userEvent.setup();
 

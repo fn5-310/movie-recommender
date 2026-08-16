@@ -105,7 +105,7 @@ export default function MovieDetail() {
         <h1>{error || "Movie not found"}</h1>
         <button
           type="button"
-          onClick={() => navigate("/")}
+          onClick={() => navigate(-1)}
           className="back-button"
         >
           Go back
@@ -152,7 +152,7 @@ export default function MovieDetail() {
     <div className="page-container">
       <button
         type="button"
-        onClick={() => navigate("/")}
+        onClick={() => navigate(-1)}
         className="back-button"
       >
         ← Back to Search

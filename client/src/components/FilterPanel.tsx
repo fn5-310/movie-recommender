@@ -7,7 +7,10 @@ import "./FilterPanel.css";
 const CURRENT_YEAR = new Date().getFullYear();
 const MIN_YEAR = 1900;
 
-const SORT_OPTIONS: { value: NonNullable<DiscoverFilters["sort"]>; label: string }[] = [
+const SORT_OPTIONS: {
+  value: NonNullable<DiscoverFilters["sort"]>;
+  label: string;
+}[] = [
   { value: "popularity", label: "Popularity" },
   { value: "rating", label: "Rating" },
   { value: "release_date", label: "Release date" },
@@ -107,7 +110,9 @@ export default function FilterPanel({
           <select
             id="genre-select"
             value={genreId ?? ""}
-            onChange={(e) => setGenreId(e.target.value ? Number(e.target.value) : undefined)}
+            onChange={(e) =>
+              setGenreId(e.target.value ? Number(e.target.value) : undefined)
+            }
           >
             <option value="">All genres</option>
             {MOVIE_GENRES.map((genre) => (
@@ -143,9 +148,17 @@ export default function FilterPanel({
             <ul className="actor-suggestions">
               {actorResults.map((person) => (
                 <li key={person.id}>
-                  <button type="button" onClick={() => handleSelectActor(person)}>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectActor(person)}
+                  >
                     {person.name}
-                    {person.knownFor && <span className="actor-suggestions__meta"> · {person.knownFor}</span>}
+                    {person.knownFor && (
+                      <span className="actor-suggestions__meta">
+                        {" "}
+                        · {person.knownFor}
+                      </span>
+                    )}
                   </button>
                 </li>
               ))}
@@ -210,7 +223,11 @@ export default function FilterPanel({
       {hasActiveFilters && (
         <div className="active-filters">
           {selectedGenre && (
-            <button type="button" className="chip" onClick={() => setGenreId(undefined)}>
+            <button
+              type="button"
+              className="chip"
+              onClick={() => setGenreId(undefined)}
+            >
               {selectedGenre.name} ✕
             </button>
           )}
@@ -232,11 +249,19 @@ export default function FilterPanel({
             </button>
           )}
           {ratingMin > 0 && (
-            <button type="button" className="chip" onClick={() => setRatingMin(0)}>
+            <button
+              type="button"
+              className="chip"
+              onClick={() => setRatingMin(0)}
+            >
               {ratingMin.toFixed(1)}+ rating ✕
             </button>
           )}
-          <button type="button" className="chip chip--clear-all" onClick={clearAll}>
+          <button
+            type="button"
+            className="chip chip--clear-all"
+            onClick={clearAll}
+          >
             Clear all
           </button>
         </div>
