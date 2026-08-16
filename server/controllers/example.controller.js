@@ -1,5 +1,12 @@
 import Example from "../models/example.model.js";
 
+export const testFunction = async(string1, string2) => {
+  if (string2 === null) {
+    return testFunction(string1, string1);
+  }
+  return `${string1}-${string2}`
+}
+
 export const getAll = async (_req, res) => {
   try {
     const items = await Example.find().sort({ createdAt: -1 });

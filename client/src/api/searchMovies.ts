@@ -2,7 +2,7 @@ import type { Movie, SearchMoviesResponse } from "../types/movie";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w342";
-const API_KEY = import.meta.env.VITE_MOVIE_API_KEY;
+
 
 // Raw shape returned by the movie API — kept separate from our normalized Movie type
 interface RawMovieResult {
@@ -43,6 +43,7 @@ export async function searchMovies(
   page: number = 1,
   signal?: AbortSignal,
 ): Promise<SearchMoviesResponse> {
+  const API_KEY = import.meta.env.VITE_MOVIE_API_KEY;
   if (!API_KEY) {
     throw new Error(
       "Missing VITE_MOVIE_API_KEY (set it in client/.env as VITE_MOVIE_API_KEY=... and restart Vite).",
