@@ -28,7 +28,7 @@ interface MovieDetail {
   credits: { cast: CastMember[] };
 }
 
-function CastList({ cast }: { cast: CastMember[] }) {
+function CastList({ cast }: Readonly<{ cast: CastMember[] }>) {
   const topCast = cast.slice(0, MAX_CAST_TO_SHOW);
 
   if (topCast.length === 0) {
@@ -103,7 +103,11 @@ export default function MovieDetail() {
     return (
       <div className="message-container">
         <h1>{error || "Movie not found"}</h1>
-        <button onClick={() => navigate("/")} className="back-button">
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          className="back-button"
+        >
           Go back
         </button>
       </div>
@@ -139,14 +143,18 @@ export default function MovieDetail() {
   }
 
   let castData: CastMember[] = [];
-  if (movie.credits && movie.credits.cast) {
+  if (movie.credits?.cast) {
     castData = movie.credits.cast;
   }
 
   //Movie page section
   return (
     <div className="page-container">
-      <button onClick={() => navigate("/")} className="back-button">
+      <button
+        type="button"
+        onClick={() => navigate("/")}
+        className="back-button"
+      >
         ← Back to Search
       </button>
 
