@@ -2,7 +2,6 @@ import type { Movie, SearchMoviesResponse } from "../types/movie";
 
 const API_BASE_URL = "https://api.themoviedb.org/3";
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w342";
-const API_KEY = import.meta.env.VITE_MOVIE_API_KEY;
 
 interface RawMovieResult {
   id: number;
@@ -34,11 +33,11 @@ function normalizeMovie(raw: RawMovieResult): Movie {
 }
 
 export interface DiscoverFilters {
-  genre?: number;       // TMDB genre ID, not the name
+  genre?: number;
   yearFrom?: number;
   yearTo?: number;
   ratingMin?: number;
-  castId?: number;       // TMDB person ID, resolved from actor name separately
+  castId?: number;
   sort?: "rating" | "release_date" | "popularity";
   page?: number;
 }
@@ -53,6 +52,7 @@ export async function discoverMovies(
   filters: DiscoverFilters,
   signal?: AbortSignal,
 ): Promise<SearchMoviesResponse> {
+  const API_KEY = import.meta.env.VITE_MOVIE_API_KEY;
   if (!API_KEY) {
     throw new Error(
       "Missing VITE_MOVIE_API_KEY (set it in client/.env as VITE_MOVIE_API_KEY=... and restart Vite).",
