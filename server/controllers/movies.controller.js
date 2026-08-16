@@ -1,29 +1,41 @@
-import { randomInt } from 'node:crypto';
+import { randomInt } from "node:crypto";
 
-const randRange = 500 // TMDB defined max page limit
-const randomUrl = 'https://api.themoviedb.org/3/discover/movie?page=1&vote_average.gte=0';
+const ENTRIES_PER_PAGE = 20;
+const TMDB_PAGE_MAX = 500 // TMDB defined max page limit, pretty sure it extends beyond that
+const DISCOVER_URL = "https://api.themoviedb.org/3/discover/movie";
 
 /**
  * Selects a random page given randRange for the TMDB url
  * @returns A populated url with a random number for the page field
  */
 const randomPage = () => {
-    return `https://api.themoviedb.org/3/discover/movie?page=${randomInt(1, randRange)}&vote_average.gte=0`
+    const randomUrl = new URL(DISCOVER_URL);
+    randomUrl.searchParams.set("api_key", process.env.TMDB_KEY);
+    randomUrl.searchParams.set("page", String(randomInt(1, TMDB_PAGE_MAX)));
+    randomUrl.searchParams.set("vote_average.gte", String(0));
+    return randomUrl.toString()
 }
 
 const randomResult = (json) => {
-    return json.results[randomInt(0,20)];
+    return json.results[randomInt(0,ENTRIES_PER_PAGE)];
 }
 
 export const getRandomMovie = async (_req, res) => {
-    fetch(randomPage(), {
-        method: 'GET',
-        headers: {
-            accept: 'application/json',
-            Authorization: `Bearer ${process.env.TMDB_ACCESS_TOKEN}`
+    try {
+        const apiResult = await fetch(randomPage(), {
+            method: "GET",
+            headers: { accept: "application/json" }
+        })
+
+        if (!apiResult.ok) {
+            throw new Error(`TMDB request failed with status code: ${apiResult.status}`);
         }
-    })
-        .then(apiRes => apiRes.json())
-        .then(data => res.json(randomResult(data)))
-        .catch(err => res.status(500).json({ message: err.message }))
+
+        const data = await apiResult.json();
+        res.json(randomResult(data));
+
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+    }
+
 }
