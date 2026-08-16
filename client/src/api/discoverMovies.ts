@@ -64,12 +64,12 @@ export async function discoverMovies(
   url.searchParams.set("include_adult", "false");
   url.searchParams.set("sort_by", SORT_MAP[filters.sort ?? "popularity"]);
 
-  if (filters.genre) url.searchParams.set("with_genres", String(filters.genre));
-  if (filters.yearFrom) url.searchParams.set("primary_release_date.gte", `${filters.yearFrom}-01-01`);
-  if (filters.yearTo) url.searchParams.set("primary_release_date.lte", `${filters.yearTo}-12-31`);
-  if (filters.ratingMin) url.searchParams.set("vote_average.gte", String(filters.ratingMin));
-  if (filters.castId) url.searchParams.set("with_cast", String(filters.castId));
-  if (filters.page) url.searchParams.set("page", String(filters.page));
+  if (filters.genre) {url.searchParams.set("with_genres", String(filters.genre))};
+  if (filters.yearFrom) {url.searchParams.set("primary_release_date.gte", `${filters.yearFrom}-01-01`)};
+  if (filters.yearTo) {url.searchParams.set("primary_release_date.lte", `${filters.yearTo}-12-31`)};
+  if (filters.ratingMin) {url.searchParams.set("vote_average.gte", String(filters.ratingMin))};
+  if (filters.castId) {url.searchParams.set("with_cast", String(filters.castId))};
+  if (filters.page) {url.searchParams.set("page", String(filters.page))};
 
   const response = await fetch(url.toString(), { signal });
 
