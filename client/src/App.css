@@ -7,3 +7,52 @@
 #search-page > h1 {
   display: none;
 }
+
+.filter-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin: 1rem auto 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: #4a4852;
+  transition: color 0.2s;
+  padding: 0.25rem 0.75rem;
+}
+
+.filter-toggle:hover {
+  color: #9b96a3;
+}
+
+.filter-toggle__icon {
+  display: inline-block;
+  transition: transform 0.25s;
+}
+
+.filter-toggle__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #c8a96e;
+  flex-shrink: 0;
+}
+
+.filter-panel-wrap {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.35s ease, opacity 0.25s ease;
+}
+
+.filter-panel-wrap--open {
+  max-height: 600px;
+  opacity: 1;
+}
