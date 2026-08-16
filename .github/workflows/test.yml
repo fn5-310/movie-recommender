@@ -1,0 +1,40 @@
+name: Vitest Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install root dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install server dependencies
+        working-directory: ./server
+        run: npm ci --ignore-scripts
+
+      - name: Install client dependencies
+        working-directory: ./client
+        run: npm ci --ignore-scripts
+
+      - name: Run Backend Tests
+        working-directory: ./server
+        run: npm run test
+
+      - name: Run Frontend Tests
+        working-directory: ./client
+        run: npm run test

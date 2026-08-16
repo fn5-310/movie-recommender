@@ -3,8 +3,6 @@ import type { Movie, SearchMoviesResponse } from "../types/movie";
 const API_BASE_URL = "https://api.themoviedb.org/3";
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w342";
 
-
-// Raw shape returned by the movie API — kept separate from our normalized Movie type
 interface RawMovieResult {
   id: number;
   title: string;
@@ -15,7 +13,7 @@ interface RawMovieResult {
   vote_average: number | null;
 }
 
-interface RawSearchResponse {
+interface RawDiscoverResponse {
   page: number;
   results: RawMovieResult[];
   total_pages: number;
@@ -34,13 +32,24 @@ function normalizeMovie(raw: RawMovieResult): Movie {
   };
 }
 
-/**
- * Search movies by title (query-by-title endpoint).
- * Throws on network/HTTP errors — callers should catch and surface a friendly message.
- */
-export async function searchMovies(
-  query: string,
-  page: number = 1,
+export interface DiscoverFilters {
+  genre?: number;
+  yearFrom?: number;
+  yearTo?: number;
+  ratingMin?: number;
+  castId?: number;
+  sort?: "rating" | "release_date" | "popularity";
+  page?: number;
+}
+
+const SORT_MAP: Record<NonNullable<DiscoverFilters["sort"]>, string> = {
+  rating: "vote_average.desc",
+  release_date: "primary_release_date.desc",
+  popularity: "popularity.desc",
+};
+
+export async function discoverMovies(
+  filters: DiscoverFilters,
   signal?: AbortSignal,
 ): Promise<SearchMoviesResponse> {
   const API_KEY = import.meta.env.VITE_MOVIE_API_KEY;
@@ -50,19 +59,25 @@ export async function searchMovies(
     );
   }
 
-  const url = new URL(`${API_BASE_URL}/search/movie`);
+  const url = new URL(`${API_BASE_URL}/discover/movie`);
   url.searchParams.set("api_key", API_KEY);
-  url.searchParams.set("query", query);
-  url.searchParams.set("page", String(page));
   url.searchParams.set("include_adult", "false");
+  url.searchParams.set("sort_by", SORT_MAP[filters.sort ?? "popularity"]);
+
+  if (filters.genre) {url.searchParams.set("with_genres", String(filters.genre))};
+  if (filters.yearFrom) {url.searchParams.set("primary_release_date.gte", `${filters.yearFrom}-01-01`)};
+  if (filters.yearTo) {url.searchParams.set("primary_release_date.lte", `${filters.yearTo}-12-31`)};
+  if (filters.ratingMin) {url.searchParams.set("vote_average.gte", String(filters.ratingMin))};
+  if (filters.castId) {url.searchParams.set("with_cast", String(filters.castId))};
+  if (filters.page) {url.searchParams.set("page", String(filters.page))};
 
   const response = await fetch(url.toString(), { signal });
 
   if (!response.ok) {
-    throw new Error(`Search failed with status ${response.status}`);
+    throw new Error(`Discover failed with status ${response.status}`);
   }
 
-  const data: RawSearchResponse = await response.json();
+  const data: RawDiscoverResponse = await response.json();
 
   return {
     results: data.results.map(normalizeMovie),
