@@ -8,7 +8,7 @@ type RandomButtonProps = {
 }
 
 export default function RandomButton({onMovieGet} : RandomButtonProps) {
-    const [buttonName, setButtonName] = useState("Get Random");
+    const [buttonName, setButtonName] = useState("Go to Random Movie");
     const getRandom = async () => {
         try {
             setButtonName("Generating...")
@@ -18,7 +18,7 @@ export default function RandomButton({onMovieGet} : RandomButtonProps) {
             setButtonName("Generated!")
         } catch (err: unknown) {
             console.log(err instanceof Error ? err.message : "Something went wrong with RandomButton.");
-            setButtonName("Get Random")
+            setButtonName("Go to Random Movie")
         }
     }
 
