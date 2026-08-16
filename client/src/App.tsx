@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./App.css";
 import SearchBar from "./components/SearchBar.tsx";
 import SearchResultsList from "./components/SearchResultsList.tsx";
@@ -10,11 +11,12 @@ import type { DiscoverFilters } from "./api/discoverMovies";
 function App() {
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState<DiscoverFilters>({});
+  const navigate = useNavigate();
 
   const { movies, isLoading, hasSearched, hasMore, loadMore } = useMovieResults(query, filters);
 
   const handleMovieClick = (movie: Movie) => {
-    console.log("Selected movie:", movie);
+    navigate(`/movie/${movie.id}`);
   };
 
   return (
