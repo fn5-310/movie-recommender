@@ -4,7 +4,7 @@
 
 .page-container {
   padding: 2rem;
-  max-width: 1800px;
+  max-width: 1000px;
   margin: 0 auto;
 }
 
@@ -20,7 +20,7 @@
 }
 
 .movie-poster {
-  width: 500px;
+  width: 400px;
   height: auto;
   border-radius: 8px;
   object-fit: cover;

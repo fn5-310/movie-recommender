@@ -114,4 +114,21 @@ export const handlers = [
       },
     });
   }),
+
+  http.get("https://api.themoviedb.org/3/movie/:id/recommendations", () => {
+    return HttpResponse.json({
+      results: [
+        {
+          id: 100,
+          title: "TestRecommendedMovie",
+          poster_path: "/rec1.jpg",
+          release_date: "2026-01-01",
+        },
+      ],
+      page: 1,
+      total_pages: 1,
+      total_results: 1,
+    });
+  },
+),
 ];
