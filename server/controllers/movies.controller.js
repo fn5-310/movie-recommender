@@ -17,7 +17,7 @@ const randomPage = () => {
 }
 
 const randomResult = (json) => {
-    return json.results[randomInt(0,ENTRIES_PER_PAGE)];
+    return json.results[randomInt(0,json.results.length)];
 }
 
 export const getRandomMovie = async (_req, res) => {
