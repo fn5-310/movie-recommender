@@ -129,38 +129,21 @@ export const handlers = [
       total_pages: 1,
       total_results: 1,
     });
-  },
-),
-    // derived from Final Destination Bloodlines for guaranteed image paths and genre codes
-    http.get("http://localhost:5000/api/movies/random", () => {
-        return HttpResponse.json({
-        id: 123,
-        title: "Not a real movie",
-        overview: "A generic movie",
-        poster_path: "/final-destination-bloodlines.jpg", // filler image
-        release_date: "2025-05-14",
-        runtime: 20,
-        vote_average: 1.4,
-        genres: [
-            { id: 27, name: "Horror" },
-            { id: 9648, name: "Mystery" },
-        ],
-        credits: {
-            cast: [
-            {
-                id: 1001,
-                name: "Kaitlyn Santa Juana",
-                character: "Stefani Reyes",
-                profile_path: "/kaitlyn-santa-juana.jpg",
-            },
-            {
-                id: 1002,
-                name: "Teo Briones",
-                character: "Charlie Reyes",
-                profile_path: "/teo-briones.jpg",
-            }
-            ],
-        },
-        });
-    }),
+  }),
+
+  http.get("https://api.themoviedb.org/3/movie/:id/reviews", () => {
+    return HttpResponse.json({
+      results: [
+        { id: "1", author: "ReviewerOne", content: "Great movie, loved the pacing and the ending.", author_details: { rating: 8 } },
+        { id: "2", author: "ReviewerTwo", content: "It was okay, nothing special.", author_details: { rating: 5 } },
+        { id: "3", author: "ReviewerThree", content: "Absolutely fantastic cinematography.", author_details: { rating: 9 } },
+        { id: "4", author: "ReviewerFour", content: "Not my taste but well made.", author_details: { rating: null } },
+        { id: "5", author: "ReviewerFive", content: "A solid watch overall.", author_details: { rating: 7 } },
+        { id: "6", author: "ReviewerSix", content: "Would recommend to fans of the genre.", author_details: { rating: 6 } },
+      ],
+      page: 1,
+      total_pages: 1,
+      total_results: 6,
+    });
+  }),
 ];

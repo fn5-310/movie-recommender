@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import "./MovieDetail.css";
 
 import MovieRecommendations from "../components/MovieRecommendations";
+import ReviewsList from "../components/ReviewsList";
 
 const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
@@ -187,6 +188,9 @@ export default function MovieDetail() {
       </div>
       <h3>Recommendations</h3>
       <MovieRecommendations movieId={movie.id} />
+
+      <h3>Review from User</h3>
+      <ReviewsList movieId={movie.id} />
     </div>
   );
 }
