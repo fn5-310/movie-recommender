@@ -6,7 +6,8 @@ import SearchResultsList from "./components/SearchResultsList.tsx";
 import FilterPanel from "./components/FilterPanel.tsx";
 import { useMovieResults } from "./hooks/useMovieResults.ts";
 import type { Movie } from "./types/movie.ts";
-import type { DiscoverFilters } from "./api/discoverMovies.ts";
+import type { DiscoverFilters } from "./api/discoverMovies";
+import RandomButton from "./components/RandomButton.tsx";
 
 function App() {
   const [query, setQuery] = useState("");
@@ -59,6 +60,7 @@ function App() {
         onLoadMore={loadMore}
         onMovieClick={handleMovieClick}
       />
+      <RandomButton onMovieGet={(movie) => handleMovieClick(movie)}/>
     </section>
   );
 }
