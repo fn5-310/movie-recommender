@@ -12,7 +12,14 @@ function App() {
   const navigate = useNavigate();
 
   const [query, setQuery] = useState<string>(() => {
-    return sessionStorage.getItem("movieSearchQuery") || "";
+    const savedQuery = sessionStorage.getItem("movieSearchQuery");
+    if (!savedQuery) {
+      return "";
+    }
+
+    const safeQuery = String(savedQuery).replace(/[<>]/g, "").substring(0, 200);
+
+    return safeQuery;
   });
 
   const [filters, setFilters] = useState<DiscoverFilters>(() => {
