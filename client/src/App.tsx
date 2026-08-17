@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./App.css";
-import SearchBar from "./components/SearchBar.tsx";
-import SearchResultsList from "./components/SearchResultsList.tsx";
+import SearchBar from "./components/SearchBar";
+import SearchResultsList from "./components/SearchResultsList";
 import FilterPanel from "./components/FilterPanel";
 import { useMovieResults } from "./hooks/useMovieResults";
-import type { Movie } from "./types/movie.ts";
+import type { Movie } from "./types/movie";
 import type { DiscoverFilters } from "./api/discoverMovies";
 
 function App() {
@@ -64,7 +64,9 @@ function App() {
   );
 
   useEffect(() => {
-    sessionStorage.setItem("movieSearchQuery", query);
+    const safeQuery = String(query).replace(/[<>]/g, "").substring(0, 200);
+
+    sessionStorage.setItem("movieSearchQuery", safeQuery);
   }, [query]);
 
   useEffect(() => {
