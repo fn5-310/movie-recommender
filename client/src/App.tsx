@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import DOMPurify from "dompurify";
 import "./App.css";
 import SearchBar from "./components/SearchBar";
 import SearchResultsList from "./components/SearchResultsList";
@@ -17,11 +18,7 @@ function App() {
       return "";
     }
 
-    try {
-      return decodeURIComponent(savedQuery);
-    } catch {
-      return "";
-    }
+    return DOMPurify.sanitize(savedQuery);
   });
 
   const [filters, setFilters] = useState<DiscoverFilters>(() => {
@@ -66,8 +63,7 @@ function App() {
   );
 
   useEffect(() => {
-    const safeQuery = encodeURIComponent(query);
-
+    const safeQuery = DOMPurify.sanitize(query);
     sessionStorage.setItem("movieSearchQuery", safeQuery);
   }, [query]);
 
