@@ -2,6 +2,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "./MovieDetail.css";
 
+import MovieRecommendations from "../components/MovieRecommendations";
+
 const TMDB_API_KEY = import.meta.env.VITE_MOVIE_API_KEY;
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 const CAST_IMAGE_BASE = "https://image.tmdb.org/t/p/w200";
@@ -183,6 +185,8 @@ export default function MovieDetail() {
           <CastList cast={castData} />
         </div>
       </div>
+      <h3>Recommendations</h3>
+      <MovieRecommendations movieId={movie.id} />
     </div>
   );
 }
