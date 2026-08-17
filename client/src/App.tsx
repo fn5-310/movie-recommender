@@ -17,7 +17,38 @@ function App() {
 
   const [filters, setFilters] = useState<DiscoverFilters>(() => {
     const savedFilters = sessionStorage.getItem("movieSearchFilters");
-    return savedFilters ? JSON.parse(savedFilters) : {};
+    if (!savedFilters) {
+      return {};
+    }
+
+    try {
+      const parsed = JSON.parse(savedFilters);
+      const safeFilters: DiscoverFilters = {};
+
+      if (typeof parsed.genre === "number") {
+        safeFilters.genre = parsed.genre;
+      }
+      if (typeof parsed.yearFrom === "number") {
+        safeFilters.yearFrom = parsed.yearFrom;
+      }
+      if (typeof parsed.yearTo === "number") {
+        safeFilters.yearTo = parsed.yearTo;
+      }
+      if (typeof parsed.ratingMin === "number") {
+        safeFilters.ratingMin = parsed.ratingMin;
+      }
+      if (typeof parsed.castId === "number") {
+        safeFilters.castId = parsed.castId;
+      }
+
+      if (["popularity", "rating", "release_date"].includes(parsed.sort)) {
+        safeFilters.sort = parsed.sort;
+      }
+
+      return safeFilters;
+    } catch {
+      return {};
+    }
   });
 
   const { movies, isLoading, hasSearched, hasMore, loadMore } = useMovieResults(
