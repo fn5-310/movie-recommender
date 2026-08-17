@@ -20,7 +20,7 @@ function App() {
     try {
       const parsed = JSON.parse(savedQuery);
 
-      if (typeof parsed === "string") {
+      if (typeof parsed === "string" && /^[^<>]*$/.test(parsed)) {
         return parsed;
       }
       return "";
@@ -71,7 +71,9 @@ function App() {
   );
 
   useEffect(() => {
-    sessionStorage.setItem("movieSearchQuery", JSON.stringify(query));
+    if (/^[^<>]*$/.test(query)) {
+      sessionStorage.setItem("movieSearchQuery", JSON.stringify(query));
+    }
   }, [query]);
 
   useEffect(() => {
