@@ -129,7 +129,40 @@ export const handlers = [
       total_pages: 1,
       total_results: 1,
     });
-  }),
+  },
+),
+    // derived from Final Destination Bloodlines for guaranteed image paths and genre codes
+    http.get("http://localhost:5000/api/movies/random", () => {
+        return HttpResponse.json({
+        id: 123,
+        title: "Not a real movie",
+        overview: "A generic movie",
+        poster_path: "/final-destination-bloodlines.jpg", // filler image
+        release_date: "2025-05-14",
+        runtime: 20,
+        vote_average: 1.4,
+        genres: [
+            { id: 27, name: "Horror" },
+            { id: 9648, name: "Mystery" },
+        ],
+        credits: {
+            cast: [
+            {
+                id: 1001,
+                name: "Kaitlyn Santa Juana",
+                character: "Stefani Reyes",
+                profile_path: "/kaitlyn-santa-juana.jpg",
+            },
+            {
+                id: 1002,
+                name: "Teo Briones",
+                character: "Charlie Reyes",
+                profile_path: "/teo-briones.jpg",
+            }
+            ],
+        },
+        });
+    }),
 
   http.get("https://api.themoviedb.org/3/movie/:id/reviews", () => {
     return HttpResponse.json({
