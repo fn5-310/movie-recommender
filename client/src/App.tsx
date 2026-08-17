@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import DOMPurify from "dompurify";
 import "./App.css";
 import SearchBar from "./components/SearchBar";
 import SearchResultsList from "./components/SearchResultsList";
@@ -18,7 +17,16 @@ function App() {
       return "";
     }
 
-    return DOMPurify.sanitize(savedQuery);
+    try {
+      const parsed = JSON.parse(savedQuery);
+
+      if (typeof parsed === "string") {
+        return parsed;
+      }
+      return "";
+    } catch {
+      return "";
+    }
   });
 
   const [filters, setFilters] = useState<DiscoverFilters>(() => {
@@ -63,8 +71,7 @@ function App() {
   );
 
   useEffect(() => {
-    const safeQuery = DOMPurify.sanitize(query);
-    sessionStorage.setItem("movieSearchQuery", safeQuery);
+    sessionStorage.setItem("movieSearchQuery", JSON.stringify(query));
   }, [query]);
 
   useEffect(() => {
