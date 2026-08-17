@@ -24,7 +24,7 @@ function App() {
     <>
       <section id="search-page">
         <h1>Find a movie</h1>
-        <SearchBar onQueryChange={handleQueryChange} isLoading={isLoading} />
+        <SearchBar onQueryChange={setQuery} isLoading={isLoading} />
         <FilterPanel onFiltersChange={setFilters} searchActive={query.length > 0} />
         <SearchResultsList
           movies={movies}

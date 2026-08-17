@@ -63,7 +63,7 @@ export const handlers = [
     });
   }),
 
-  http.get("https://api.themoviedb.org/3/movie/:id", ({ params, request }) => {
+  http.get("https://api.themoviedb.org/3/movie/:id", ({ params }) => {
     const { id } = params;
     return HttpResponse.json({
       id: Number(id),
