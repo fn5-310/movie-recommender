@@ -17,9 +17,11 @@ function App() {
       return "";
     }
 
-    const safeQuery = String(savedQuery).replace(/[<>]/g, "").substring(0, 200);
-
-    return safeQuery;
+    try {
+      return decodeURIComponent(savedQuery);
+    } catch {
+      return "";
+    }
   });
 
   const [filters, setFilters] = useState<DiscoverFilters>(() => {
@@ -64,7 +66,7 @@ function App() {
   );
 
   useEffect(() => {
-    const safeQuery = String(query).replace(/[<>]/g, "").substring(0, 200);
+    const safeQuery = encodeURIComponent(query);
 
     sessionStorage.setItem("movieSearchQuery", safeQuery);
   }, [query]);
