@@ -7,6 +7,7 @@ import FilterPanel from "./components/FilterPanel";
 import { useMovieResults } from "./hooks/useMovieResults";
 import type { Movie } from "./types/movie.ts";
 import type { DiscoverFilters } from "./api/discoverMovies";
+import RandomButton from "./components/RandomButton.tsx";
 
 function App() {
   const [query, setQuery] = useState("");
@@ -20,19 +21,23 @@ function App() {
   };
 
   return (
-    <section id="search-page">
-      <h1>Find a movie</h1>
-      <SearchBar onQueryChange={setQuery} isLoading={isLoading} />
-      <FilterPanel onFiltersChange={setFilters} searchActive={query.length > 0} />
-      <SearchResultsList
-        movies={movies}
-        isLoading={isLoading}
-        hasSearched={hasSearched}
-        hasMore={hasMore}
-        onLoadMore={loadMore}
-        onMovieClick={handleMovieClick}
-      />
-    </section>
+    <>
+      <section id="search-page">
+        <h1>Find a movie</h1>
+        <SearchBar onQueryChange={setQuery} isLoading={isLoading} />
+        <FilterPanel onFiltersChange={setFilters} searchActive={query.length > 0} />
+        <SearchResultsList
+          movies={movies}
+          isLoading={isLoading}
+          hasSearched={hasSearched}
+          hasMore={hasMore}
+          onLoadMore={loadMore}
+          onMovieClick={handleMovieClick}
+        />
+      </section>
+      <RandomButton onMovieGet={(movie) => handleMovieClick(movie)}/>
+    </>
+    
   );
 }
 
