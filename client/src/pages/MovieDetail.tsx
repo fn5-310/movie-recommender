@@ -4,7 +4,7 @@ import "./MovieDetail.css";
 
 import MovieRecommendations from "../components/MovieRecommendations";
 
-const TMDB_API_KEY = import.meta.env.VITE_MOVIE_API_KEY;
+const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 const CAST_IMAGE_BASE = "https://image.tmdb.org/t/p/w200";
 const PLACEHOLDER_POSTER = "https://via.placeholder.com/300x450?text=No+Poster";

@@ -16,8 +16,8 @@ describe("discoverMovies", () => {
   });
 
   it("throws when the API key is missing", async () => {
-    vi.stubEnv("VITE_MOVIE_API_KEY", "");
-    await expect(discoverMovies({})).rejects.toThrow(/Missing VITE_MOVIE_API_KEY/);
-    vi.stubEnv("VITE_MOVIE_API_KEY", "test-key");
+    vi.stubEnv("VITE_TMDB_API_KEY", "");
+    await expect(discoverMovies({})).rejects.toThrow(/Missing VITE_TMDB_API_KEY/);
+    vi.stubEnv("VITE_TMDB_API_KEY", "test-key");
   });
 });
