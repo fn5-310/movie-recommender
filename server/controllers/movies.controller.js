@@ -1,6 +1,5 @@
 import { randomInt } from "node:crypto";
 
-const ENTRIES_PER_PAGE = 20;
 const TMDB_PAGE_MAX = 500 // TMDB defined max page limit, pretty sure it extends beyond that
 const DISCOVER_URL = "https://api.themoviedb.org/3/discover/movie";
 
@@ -10,7 +9,7 @@ const DISCOVER_URL = "https://api.themoviedb.org/3/discover/movie";
  */
 const randomPage = () => {
     const randomUrl = new URL(DISCOVER_URL);
-    randomUrl.searchParams.set("api_key", process.env.TMDB_KEY);
+    randomUrl.searchParams.set("api_key", process.env.VITE_TMDB_API_KEY);
     randomUrl.searchParams.set("page", String(randomInt(1, TMDB_PAGE_MAX)));
     randomUrl.searchParams.set("vote_average.gte", String(0));
     return randomUrl.toString()
@@ -37,5 +36,4 @@ export const getRandomMovie = async (_req, res) => {
     } catch (err) {
         res.status(500).json({ message: err.message })
     }
-
 }
