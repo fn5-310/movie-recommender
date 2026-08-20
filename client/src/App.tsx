@@ -34,11 +34,13 @@ function App() {
       <SearchBar onQueryChange={setQuery} isLoading={isLoading} />
 
       <button
+        type="button"
         className="filter-toggle"
         onClick={() => setShowFilters((v) => !v)}
         aria-expanded={showFilters}
       >
         <button
+          type="button"
           className="filter-toggle__icon"
           style={{ transform: showFilters ? "rotate(180deg)" : "rotate(0deg)" }}
         >
