@@ -26,17 +26,11 @@ npm run install:all
 ### Setting up `.env`
 
 Because the website uses TMDB, you must have an API Key for API Read Access Token for TMDB.
-Go to `server/` and rename `.env.example` to `.env`, pasting in your key or access token as required. Your `.env` file may look like this once completed:
+The `.env` should located in the project root, and may look like this once completed:
 ```
-PORT=5000
-CLIENT_URL=http://localhost:5173
-TMDB_ACCESS_TOKEN=insertApiReadAccessTokenHere
-TMDB_KEY=insertApiKeyHere
-```
-
-Currently we also require a `.env` file for `client/` as well. In `client/.env`:
-```
-VITE_MOVIE_API_KEY=insertApiKeyHere
+VITE_TMDB_API_KEY=someApiKeyHere
+VITE_FRONTEND_PORT=5173
+BACKEND_PORT=5000
 ```
 
 ### Running the Website
