@@ -23,7 +23,7 @@ export default function ReviewsList({ movieId }: Readonly<Props>) {
       setLoading(true);
       try {
         const url = `https://api.themoviedb.org/3/movie/${movieId}/reviews?api_key=${
-          import.meta.env.VITE_MOVIE_API_KEY
+          import.meta.env.VITE_TMDB_API_KEY
         }`;
         const response = await fetch(url);
         const data = await response.json();
