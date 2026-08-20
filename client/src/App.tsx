@@ -90,7 +90,7 @@ function App() {
       <section id="search-page">
         <h1>Find a movie</h1>
         <SearchBar onQueryChange={setQuery} isLoading={isLoading} initialValue={query}/>
-        <FilterPanel onFiltersChange={setFilters} searchActive={query.length > 0} />
+        <FilterPanel onFiltersChange={setFilters} searchActive={query.length > 0} initialFilters={filters} />
         <SearchResultsList
           movies={movies}
           isLoading={isLoading}

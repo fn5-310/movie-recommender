@@ -19,21 +19,31 @@ const SORT_OPTIONS: {
 interface FilterPanelProps {
   onFiltersChange: (filters: DiscoverFilters) => void;
   searchActive?: boolean;
+  initialFilters?: DiscoverFilters;
 }
 
 export default function FilterPanel({
   onFiltersChange,
   searchActive = false,
+  initialFilters,
 }: Readonly<FilterPanelProps>) {
-  const [genreId, setGenreId] = useState<number | undefined>(undefined);
-  const [yearFrom, setYearFrom] = useState<number>(MIN_YEAR);
-  const [yearTo, setYearTo] = useState<number>(CURRENT_YEAR);
-  const [ratingMin, setRatingMin] = useState<number>(0);
-  const [sort, setSort] = useState<DiscoverFilters["sort"]>("popularity");
+  const [genreId, setGenreId] = useState<number | undefined>(initialFilters?.genre);
+  const [yearFrom, setYearFrom] = useState<number>(initialFilters?.yearFrom ?? MIN_YEAR);
+  const [yearTo, setYearTo] = useState<number>(initialFilters?.yearTo ?? CURRENT_YEAR);
+  const [ratingMin, setRatingMin] = useState<number>(initialFilters?.ratingMin ?? 0);
+  const [sort, setSort] = useState<DiscoverFilters["sort"]>(initialFilters?.sort ?? "popularity");
 
-  const [actorQuery, setActorQuery] = useState("");
+  const [actorQuery, setActorQuery] = useState(()=> {if (!initialFilters?.castId) return "";
+    const saved = sessionStorage.getItem("movieSearchActorName");
+    return saved ?? "";
+  });
   const [actorResults, setActorResults] = useState<Person[]>([]);
-  const [selectedActor, setSelectedActor] = useState<Person | null>(null);
+  const [selectedActor, setSelectedActor] = useState<Person | null>(() => {
+    if (!initialFilters?.castId) return null;
+    const savedName = sessionStorage.getItem("movieSearchActorName");
+    if (!savedName) return null;
+    return { id: initialFilters.castId, name: savedName } as Person;
+  });
   const [actorSearchLoading, setActorSearchLoading] = useState(false);
 
   useEffect(() => {
@@ -77,12 +87,14 @@ export default function FilterPanel({
     setSelectedActor(person);
     setActorQuery(person.name);
     setActorResults([]);
+    sessionStorage.setItem("movieSearchActorName", person.name);
   }
 
   function clearActor() {
     setSelectedActor(null);
     setActorQuery("");
     setActorResults([]);
+    sessionStorage.removeItem("movieSearchActorName");
   }
 
   function clearAll() {
