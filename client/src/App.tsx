@@ -38,12 +38,12 @@ function App() {
         onClick={() => setShowFilters((v) => !v)}
         aria-expanded={showFilters}
       >
-        <span
+        <button
           className="filter-toggle__icon"
           style={{ transform: showFilters ? "rotate(180deg)" : "rotate(0deg)" }}
         >
           ▾
-        </span>
+        </button>
         Filters
         {hasActiveFilters && <span className="filter-toggle__dot" aria-label="Filters active" />}
       </button>
