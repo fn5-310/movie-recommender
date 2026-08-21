@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import "./MovieDetail.css";
 
 import MovieRecommendations from "../components/MovieRecommendations";
+import ReviewsList from "../components/ReviewsList";
 
-const TMDB_API_KEY = import.meta.env.VITE_MOVIE_API_KEY;
+const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 const CAST_IMAGE_BASE = "https://image.tmdb.org/t/p/w200";
 const PLACEHOLDER_POSTER = "https://via.placeholder.com/300x450?text=No+Poster";
@@ -107,7 +108,7 @@ export default function MovieDetail() {
         <h1>{error || "Movie not found"}</h1>
         <button
           type="button"
-          onClick={() => navigate("/")}
+          onClick={() => navigate(-1)}
           className="back-button"
         >
           Go back
@@ -154,7 +155,7 @@ export default function MovieDetail() {
     <div className="page-container">
       <button
         type="button"
-        onClick={() => navigate("/")}
+        onClick={() => navigate(-1)}
         className="back-button"
       >
         ← Back to Search
@@ -187,6 +188,9 @@ export default function MovieDetail() {
       </div>
       <h3>Recommendations</h3>
       <MovieRecommendations movieId={movie.id} />
+
+      <h3>Review from User</h3>
+      <ReviewsList movieId={movie.id} />
     </div>
   );
 }

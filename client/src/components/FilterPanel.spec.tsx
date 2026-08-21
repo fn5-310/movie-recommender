@@ -64,4 +64,16 @@ describe("FilterPanel", () => {
 
     expect(screen.queryByRole("button", { name: /action/i })).not.toBeInTheDocument();
   });
+
+  it("initializes controls from initialFilters", () => {
+    render(
+      <FilterPanel onFiltersChange={vi.fn()} initialFilters={{ genre: 27, ratingMin: 5, sort: "rating"}}/>,
+    );
+
+    expect(screen.getByLabelText(/genre/i)).toHaveValue("27");
+    expect(screen.getByLabelText(/minimum rating/i)).toHaveValue("5");
+    expect(screen.getByLabelText(/sort by/i)).toHaveValue("rating");
+  });
+
+  
 });

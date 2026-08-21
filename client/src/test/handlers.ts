@@ -163,4 +163,20 @@ export const handlers = [
         },
         });
     }),
+
+  http.get("https://api.themoviedb.org/3/movie/:id/reviews", () => {
+    return HttpResponse.json({
+      results: [
+        { id: "1", author: "ReviewerOne", content: "Great movie, loved the pacing and the ending.", author_details: { rating: 8 } },
+        { id: "2", author: "ReviewerTwo", content: "It was okay, nothing special.", author_details: { rating: 5 } },
+        { id: "3", author: "ReviewerThree", content: "Absolutely fantastic cinematography.", author_details: { rating: 9 } },
+        { id: "4", author: "ReviewerFour", content: "Not my taste but well made.", author_details: { rating: null } },
+        { id: "5", author: "ReviewerFive", content: "A solid watch overall.", author_details: { rating: 7 } },
+        { id: "6", author: "ReviewerSix", content: "Would recommend to fans of the genre.", author_details: { rating: 6 } },
+      ],
+      page: 1,
+      total_pages: 1,
+      total_results: 6,
+    });
+  }),
 ];

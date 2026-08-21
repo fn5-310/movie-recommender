@@ -14,7 +14,7 @@ function LocationProbe() {
 
 describe("RandomButton", () => {
     beforeAll(() => {
-        vi.stubEnv("VITE_MOVIE_API_KEY", "test-key");
+        vi.stubEnv("VITE_TMDB_API_KEY", "test-key");
     })
 
     beforeEach(() => {

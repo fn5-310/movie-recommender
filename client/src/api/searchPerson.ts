@@ -33,10 +33,10 @@ function normalizePerson(raw: RawPersonResult): Person {
 }
 
 export async function searchPerson(query: string, signal?: AbortSignal): Promise<Person[]> {
-  const API_KEY = import.meta.env.VITE_MOVIE_API_KEY;
+  const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
   if (!API_KEY) {
     throw new Error(
-      "Missing VITE_MOVIE_API_KEY (set it in client/.env as VITE_MOVIE_API_KEY=... and restart Vite).",
+      "Missing VITE_TMDB_API_KEY (set it in .env as VITE_TMDB_API_KEY=... and restart Vite).",
     );
   }
 

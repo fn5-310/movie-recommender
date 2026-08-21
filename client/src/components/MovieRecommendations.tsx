@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./MovieRecommendations.css";
 
-const TMDB_API_KEY = import.meta.env.VITE_MOVIE_API_KEY;
+const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w300";
 const PLACEHOLDER_POSTER = "https://via.placeholder.com/300x450?text=No+Poster";
 

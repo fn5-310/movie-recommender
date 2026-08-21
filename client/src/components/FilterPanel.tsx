@@ -7,7 +7,10 @@ import "./FilterPanel.css";
 const CURRENT_YEAR = new Date().getFullYear();
 const MIN_YEAR = 1900;
 
-const SORT_OPTIONS: { value: NonNullable<DiscoverFilters["sort"]>; label: string }[] = [
+const SORT_OPTIONS: {
+  value: NonNullable<DiscoverFilters["sort"]>;
+  label: string;
+}[] = [
   { value: "popularity", label: "Popularity" },
   { value: "rating", label: "Rating" },
   { value: "release_date", label: "Release date" },
@@ -16,21 +19,31 @@ const SORT_OPTIONS: { value: NonNullable<DiscoverFilters["sort"]>; label: string
 interface FilterPanelProps {
   onFiltersChange: (filters: DiscoverFilters) => void;
   searchActive?: boolean;
+  initialFilters?: DiscoverFilters;
 }
 
 export default function FilterPanel({
   onFiltersChange,
   searchActive = false,
+  initialFilters,
 }: Readonly<FilterPanelProps>) {
-  const [genreId, setGenreId] = useState<number | undefined>(undefined);
-  const [yearFrom, setYearFrom] = useState<number>(MIN_YEAR);
-  const [yearTo, setYearTo] = useState<number>(CURRENT_YEAR);
-  const [ratingMin, setRatingMin] = useState<number>(0);
-  const [sort, setSort] = useState<DiscoverFilters["sort"]>("popularity");
+  const [genreId, setGenreId] = useState<number | undefined>(initialFilters?.genre);
+  const [yearFrom, setYearFrom] = useState<number>(initialFilters?.yearFrom ?? MIN_YEAR);
+  const [yearTo, setYearTo] = useState<number>(initialFilters?.yearTo ?? CURRENT_YEAR);
+  const [ratingMin, setRatingMin] = useState<number>(initialFilters?.ratingMin ?? 0);
+  const [sort, setSort] = useState<DiscoverFilters["sort"]>(initialFilters?.sort ?? "popularity");
 
-  const [actorQuery, setActorQuery] = useState("");
+  const [actorQuery, setActorQuery] = useState(()=> {if (!initialFilters?.castId) return "";
+    const saved = sessionStorage.getItem("movieSearchActorName");
+    return saved ?? "";
+  });
   const [actorResults, setActorResults] = useState<Person[]>([]);
-  const [selectedActor, setSelectedActor] = useState<Person | null>(null);
+  const [selectedActor, setSelectedActor] = useState<Person | null>(() => {
+    if (!initialFilters?.castId) return null;
+    const savedName = sessionStorage.getItem("movieSearchActorName");
+    if (!savedName) return null;
+    return { id: initialFilters.castId, name: savedName } as Person;
+  });
   const [actorSearchLoading, setActorSearchLoading] = useState(false);
 
   useEffect(() => {
@@ -74,12 +87,14 @@ export default function FilterPanel({
     setSelectedActor(person);
     setActorQuery(person.name);
     setActorResults([]);
+    sessionStorage.setItem("movieSearchActorName", person.name);
   }
 
   function clearActor() {
     setSelectedActor(null);
     setActorQuery("");
     setActorResults([]);
+    sessionStorage.removeItem("movieSearchActorName");
   }
 
   function clearAll() {
@@ -107,7 +122,9 @@ export default function FilterPanel({
           <select
             id="genre-select"
             value={genreId ?? ""}
-            onChange={(e) => setGenreId(e.target.value ? Number(e.target.value) : undefined)}
+            onChange={(e) =>
+              setGenreId(e.target.value ? Number(e.target.value) : undefined)
+            }
           >
             <option value="">All genres</option>
             {MOVIE_GENRES.map((genre) => (
@@ -143,9 +160,17 @@ export default function FilterPanel({
             <ul className="actor-suggestions">
               {actorResults.map((person) => (
                 <li key={person.id}>
-                  <button type="button" onClick={() => handleSelectActor(person)}>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectActor(person)}
+                  >
                     {person.name}
-                    {person.knownFor && <span className="actor-suggestions__meta"> · {person.knownFor}</span>}
+                    {person.knownFor && (
+                      <span className="actor-suggestions__meta">
+                        {" "}
+                        · {person.knownFor}
+                      </span>
+                    )}
                   </button>
                 </li>
               ))}
@@ -210,7 +235,11 @@ export default function FilterPanel({
       {hasActiveFilters && (
         <div className="active-filters">
           {selectedGenre && (
-            <button type="button" className="chip" onClick={() => setGenreId(undefined)}>
+            <button
+              type="button"
+              className="chip"
+              onClick={() => setGenreId(undefined)}
+            >
               {selectedGenre.name} ✕
             </button>
           )}
@@ -232,11 +261,19 @@ export default function FilterPanel({
             </button>
           )}
           {ratingMin > 0 && (
-            <button type="button" className="chip" onClick={() => setRatingMin(0)}>
+            <button
+              type="button"
+              className="chip"
+              onClick={() => setRatingMin(0)}
+            >
               {ratingMin.toFixed(1)}+ rating ✕
             </button>
           )}
-          <button type="button" className="chip chip--clear-all" onClick={clearAll}>
+          <button
+            type="button"
+            className="chip chip--clear-all"
+            onClick={clearAll}
+          >
             Clear all
           </button>
         </div>

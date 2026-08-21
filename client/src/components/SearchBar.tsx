@@ -6,6 +6,7 @@ interface SearchBarProps {
   isLoading?: boolean;
   placeholder?: string;
   debounceMs?: number;
+  initialValue?: string;
 }
 
 export default function SearchBar({
@@ -13,8 +14,9 @@ export default function SearchBar({
   isLoading = false,
   placeholder = "e.g. Blade Runner, Mulholland Drive…",
   debounceMs = 400,
+  initialValue = "",
 }: Readonly<SearchBarProps>) {
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(initialValue);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const onQueryChangeRef = useRef(onQueryChange);
 

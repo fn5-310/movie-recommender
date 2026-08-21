@@ -7,6 +7,10 @@ import App from "../App";
 import userEvent from "@testing-library/user-event";
 
 describe("MovieDetail", () => {
+  afterEach(() => {
+    server.resetHandlers();
+  });
+
   // Test 1: loading state
   it("shows a loading message while fetching", () => {
     render(
@@ -120,7 +124,7 @@ describe("MovieDetail", () => {
     const user = userEvent.setup();
 
     render(
-      <MemoryRouter initialEntries={["/movie/574475"]}>
+      <MemoryRouter initialEntries={["/", "/movie/574475"]} initialIndex={1}>
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/movie/:id" element={<MovieDetail />} />

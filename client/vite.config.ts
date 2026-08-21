@@ -11,4 +11,5 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './src/test/setup.ts', // Runs initialization code before tests
   },
+  envDir: path.resolve(import.meta.dirname, "../")
 })
