@@ -10,8 +10,6 @@ import type { DiscoverFilters } from "./api/discoverMovies";
 import RandomButton from "./components/RandomButton.tsx";
 
 function App() {
-  const [query, setQuery] = useState("");
-  const [filters, setFilters] = useState<DiscoverFilters>({});
   const [showFilters, setShowFilters] = useState(false);
   const navigate = useNavigate();
 
@@ -98,7 +96,7 @@ function App() {
   return (
     <section id="search-page">
       <h1>Find a movie</h1>
-      <SearchBar onQueryChange={setQuery} isLoading={isLoading} />
+      <SearchBar onQueryChange={setQuery} isLoading={isLoading} initialValue={query} />
 
       <button
         type="button"
