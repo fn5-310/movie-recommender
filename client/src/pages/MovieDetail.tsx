@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import "./MovieDetail.css";
 
 import MovieRecommendations from "../components/MovieRecommendations";
+import MovieGraph from "../components/MovieGraph";
 import ReviewsList from "../components/ReviewsList";
 
 const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -125,8 +126,10 @@ export default function MovieDetail() {
 
   // Format the release date
   let formattedReleaseDate = "Unknown";
+  let releaseYear: number | null = null;
   if (movie.release_date) {
     formattedReleaseDate = movie.release_date;
+    releaseYear = Number(movie.release_date.slice(0, 4));
   }
 
   // Format the genres
@@ -188,6 +191,9 @@ export default function MovieDetail() {
       </div>
       <h3>Recommendations</h3>
       <MovieRecommendations movieId={movie.id} />
+
+      <h3>Related Movies Graph</h3>
+      <MovieGraph movieId={movie.id} title={movie.title} year={releaseYear} />
 
       <h3>Review from User</h3>
       <ReviewsList movieId={movie.id} />
