@@ -1,10 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter, useLocation } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import { http, HttpResponse } from "msw";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { server } from "../test/server";
 import MovieGraph from "./MovieGraph";
+import LocationDisplay from "../test/LocationDisplay";
 import type { MovieGraphData, MovieGraphNode } from "./movieGraphData";
 
 // mocks graph due to jsdom limitations for canvas rendering
@@ -136,11 +137,6 @@ function useMultiLevelRecommendations() {
     );
 }
 
-function LocationDisplay() {
-    const location = useLocation();
-    return <span data-testid="location">{location.pathname}</span>;
-}
-
 function renderGraph() {
     return render(
         <MemoryRouter>
@@ -199,7 +195,6 @@ describe("MovieGraph", () => {
         expect(screen.getByRole("button", { name: "Root Movie" })).toHaveAttribute("aria-expanded", "true");
         expect(screen.getByRole("button", { name: "movie A" })).toHaveAttribute("aria-expanded", "true");
         expect(screen.getByRole("button", { name: "movie B" })).toHaveAttribute("aria-expanded", "true");
-
         // Level 2 nodes must NOT be marked expanded
         expect(screen.getByRole("button", { name: "shared" })).toHaveAttribute("aria-expanded", "false");
         expect(screen.getByRole("button", { name: "unique" })).toHaveAttribute("aria-expanded", "false");
@@ -214,7 +209,7 @@ describe("MovieGraph", () => {
 
         await userEvent.click(screen.getByRole("button", { name: "Root Movie" }));
 
-        expect(screen.getByTestId("location").textContent).toBe("/");
+        expect(screen.getByTestId("location-display").textContent).toBe("/");
     });
 
     it("reports a failure to load related movies", async () => {

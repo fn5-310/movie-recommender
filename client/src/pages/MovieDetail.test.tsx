@@ -5,6 +5,7 @@ import { server } from "../test/server";
 import { http, HttpResponse } from "msw";
 import App from "../App";
 import userEvent from "@testing-library/user-event";
+import LocationDisplay from "../test/LocationDisplay";
 
 describe("MovieDetail", () => {
   afterEach(() => {
@@ -125,6 +126,7 @@ describe("MovieDetail", () => {
 
     render(
       <MemoryRouter initialEntries={["/", "/movie/574475"]} initialIndex={1}>
+        <LocationDisplay/>
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/movie/:id" element={<MovieDetail />} />
@@ -136,6 +138,7 @@ describe("MovieDetail", () => {
     const backButton = screen.getByText(/← Back to Search/i);
     await user.click(backButton);
 
-    expect(await screen.findByText("Find a movie")).toBeInTheDocument();
+    // confirms page is exactly on root
+    expect(screen.getByTestId("location-display").textContent).toBe("/");
   });
 });

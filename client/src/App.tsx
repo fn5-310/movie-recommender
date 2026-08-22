@@ -96,7 +96,7 @@ function App() {
   return (
     <section id="search-page">
       <SearchBar onQueryChange={setQuery} isLoading={isLoading} initialValue={query} />
-      <RandomButton onMovieGet={(movie) => handleMovieClick(movie)}/>
+      <RandomButton/>
       <button
         type="button"
         className="filter-toggle"

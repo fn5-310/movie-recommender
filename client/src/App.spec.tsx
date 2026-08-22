@@ -4,6 +4,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { describe, it, expect } from "vitest";
 import App from "./App";
 import MovieDetail from "./pages/MovieDetail";
+import LocationDisplay from "./test/LocationDisplay";
 
 function renderApp() {
   return render(
@@ -73,6 +74,7 @@ describe("App search integration", () => {
 
     render(
       <MemoryRouter initialEntries={["/"]}>
+        <LocationDisplay/>
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/movie/:id" element={<MovieDetail />} />
@@ -97,7 +99,7 @@ describe("App search integration", () => {
     const backButton = screen.getByText(/← Back to Search/i);
     await user.click(backButton);
 
-    expect(await screen.findByText("Find a movie")).toBeInTheDocument();
+    expect(screen.getByTestId("location-display").textContent).toBe("/");
 
     const restoredInput = screen.getByRole("textbox", {
       name: /search movies/i,
