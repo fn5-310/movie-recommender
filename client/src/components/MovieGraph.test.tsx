@@ -1,10 +1,11 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter, useLocation } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import { http, HttpResponse } from "msw";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { server } from "../test/server";
 import MovieGraph from "./MovieGraph";
+import LocationDisplay from "../test/LocationDisplay";
 import type { MovieGraphData, MovieGraphNode } from "./movieGraphData";
 
 // The real graph draws to a canvas, which jsdom has no renderer for. Standing in
@@ -56,11 +57,6 @@ function useBranchingRecommendations() {
       });
     }),
   );
-}
-
-function LocationDisplay() {
-  const location = useLocation();
-  return <span data-testid="location">{location.pathname}</span>;
 }
 
 function renderGraph() {
@@ -116,7 +112,7 @@ describe("MovieGraph", () => {
 
     await userEvent.click(screen.getByRole("button", { name: "First Neighbour" }));
 
-    expect(screen.getByTestId("location")).toHaveTextContent("/movie/100");
+    expect(screen.getByTestId("location-display")).toHaveTextContent("/movie/100");
   });
 
   it("stays put when the movie at the centre is clicked", async () => {
@@ -126,7 +122,7 @@ describe("MovieGraph", () => {
     await screen.findByRole("button", { name: "First Neighbour" });
     await userEvent.click(screen.getByRole("button", { name: "Root Movie" }));
 
-    expect(screen.getByTestId("location").textContent).toBe("/");
+    expect(screen.getByTestId("location-display").textContent).toBe("/");
   });
 
   it("reports a failure to load related movies", async () => {

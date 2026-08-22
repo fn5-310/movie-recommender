@@ -95,9 +95,8 @@ function App() {
 
   return (
     <section id="search-page">
-      <h1>Find a movie</h1>
       <SearchBar onQueryChange={setQuery} isLoading={isLoading} initialValue={query} />
-
+      <RandomButton/>
       <button
         type="button"
         className="filter-toggle"
@@ -127,7 +126,6 @@ function App() {
         onLoadMore={loadMore}
         onMovieClick={handleMovieClick}
       />
-      <RandomButton onMovieGet={(movie) => handleMovieClick(movie)}/>
     </section>
   );
 }
