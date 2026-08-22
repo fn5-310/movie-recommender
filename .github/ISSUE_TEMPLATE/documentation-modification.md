@@ -3,15 +3,15 @@ name: Documentation Modification
 about: Change or add to the existing documentation
 title: "[DOCS] - [issue name/correction]"
 labels: documentation
-assignees: Crynner
+assignees: ''
 
 ---
 
-**Which documentation needs to be modified?**
-e.g. `README.md`, `CONTRIBUTING.md`, wiki, templates, etc.
+## What doc needs to be modified?
+<!-- e.g. `README.md`, `CONTRIBUTING.md`, wiki, templates, etc. -->
 
-**What needs to be changed? Why?**
-Which section needs to be changed, and how does the change benefit the project?
+## What needs to be changed and why?
+<!-- Which section needs to be changed, and how does the change benefit the project? -->
 
-**Amended Text (optional)**
-If you have conclusive phrasing for a section, add it here.
+## Additional Information (Optional)
+<!-- Add any other information that may help, e.g. context, screenshots, etc. -->

@@ -7,25 +7,23 @@ assignees: ''
 
 ---
 
-**Describe the issue**
-What is the bug, and/or why is it an issue?
+## Describe the issue
+<!-- What is the bug, and/or why is it an issue? -->
 
-**Steps To Reproduce**
-Steps to reproduce the behavior:
+## Steps to reproduce
+<!-- How did you encounter this bug? Be detailed. -->
 1. [...]
 2. [...]
 3. [...]
 
-**Expected Behavior**
-What was expected to happen instead?
+## Expected Behaviour
+<!-- What was expected to happen? -->
 
-**System Information**
+## System Information
+<!-- Add any other fields that may be helpful. -->
  - OS: [e.g. Windows, macOS, Ubuntu]
  - Browser: [e.g. chrome, safari]
  - Node.js Version: [e.g. v22.0.0]
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
-
-**Additional context (optional)**
-Add any other information about the problem here.
+## Additional Information (Optional)
+<!-- Add any other information that may help, e.g. context, screenshots, etc. -->
