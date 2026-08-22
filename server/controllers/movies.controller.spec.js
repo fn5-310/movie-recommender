@@ -1,8 +1,6 @@
-import { testFunction } from "./example.controller.js";
 import { getRandomMovie } from "./movies.controller.js";
 import {randomInt} from "node:crypto";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { request } from "supertest";
 
 // mock randomInt function to override
 vi.mock("node:crypto", () => ({
