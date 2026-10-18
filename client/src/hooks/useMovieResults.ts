@@ -77,10 +77,13 @@ export function useMovieResults(query: string, filters: DiscoverFilters): UseMov
 
   // Reset to page 1 whenever the query or filters change, so switching
   // filters mid-scroll doesn't append page-3 results onto a brand new
-  // filter set.
-  useEffect(() => {
+  // filter set. Done during render rather than in an effect, so the fetch
+  // below never starts for the old page number first.
+  const [searchedFor, setSearchedFor] = useState({ query, filters });
+  if (searchedFor.query !== query || searchedFor.filters !== filters) {
+    setSearchedFor({ query, filters });
     setPage(1);
-  }, [query, filters]);
+  }
 
   useEffect(() => {
     const requestId = ++requestIdRef.current;
