@@ -19,13 +19,14 @@ export interface HealthResponse {
   database: "connected" | "disconnected";
 }
 
-export function createApp(
-  config: AppConfig,
-  deps: AppDeps = {
+function defaultDeps(config: AppConfig): AppDeps {
+  return {
     tmdb: createTmdbClient(config.tmdbApiKey),
     isDatabaseReady: isDatabaseConnected,
-  },
-): Express {
+  };
+}
+
+export function createApp(config: AppConfig, deps: AppDeps = defaultDeps(config)): Express {
   const app = express();
   app.disable("x-powered-by");
 
