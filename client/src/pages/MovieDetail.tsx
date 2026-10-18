@@ -9,6 +9,7 @@ import { fetchMovieDetails, MOVIE_NOT_FOUND } from "../api/movieDetails";
 import { isAbortError } from "../api/tmdb";
 import { PLACEHOLDER_AVATAR, PLACEHOLDER_POSTER } from "../constants/images";
 import { useDocumentTitle } from "../hooks/useDocumentTitle";
+import { useRecordView } from "../hooks/useRecordView";
 import type { TmdbCastMember, TmdbMovieDetails } from "../types/tmdb";
 
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
@@ -69,6 +70,7 @@ export default function MovieDetail() {
     pageTitle = error === MOVIE_NOT_FOUND ? "Movie not found" : "Couldn't load movie";
   }
   useDocumentTitle(pageTitle);
+  useRecordView(movie && !loading ? movie.id : null);
 
   useEffect(() => {
     if (!id) {
