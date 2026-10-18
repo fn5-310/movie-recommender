@@ -104,6 +104,12 @@ function isDuplicateKeyError(error: unknown): boolean {
   return typeof error === "object" && error !== null && "code" in error && error.code === 11000;
 }
 
+async function sessionUser(req: Request): Promise<PublicUser | null> {
+  if (!req.session.userId) return null;
+  const user = await User.findById(req.session.userId);
+  return user ? publicUser(user) : null;
+}
+
 function handleAuthError(res: Response<ErrorResponse>, error: unknown): void {
   if (isDuplicateKeyError(error)) {
     res.status(409).json({ message: "Username or email is already registered" });
@@ -173,12 +179,6 @@ export function createAuthController(config: Pick<AppConfig, "isProduction">) {
       res.json({ message: "Logged out" });
     });
   };
-
-  async function sessionUser(req: Request): Promise<PublicUser | null> {
-    if (!req.session.userId) return null;
-    const user = await User.findById(req.session.userId);
-    return user ? publicUser(user) : null;
-  }
 
   // GET /api/users/me: the signed-in user as a resource, so no session is a 401.
   const getCurrentUser: RequestHandler<{}, UserResponse> = async (req, res) => {
