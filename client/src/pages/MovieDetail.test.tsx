@@ -8,6 +8,8 @@ import userEvent from "@testing-library/user-event";
 import LocationDisplay from "../test/LocationDisplay";
 import { AuthProvider } from "../context/AuthProvider";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
 describe("MovieDetail", () => {
   afterEach(() => {
     server.resetHandlers();
@@ -181,6 +183,61 @@ describe("MovieDetail", () => {
 
     expect(await screen.findByText("Couldn't load this movie. Please try again.")).toBeInTheDocument();
     expect(screen.queryByText("404")).not.toBeInTheDocument();
+  });
+
+  it("adds the movie to a logged-in user's viewing history", async () => {
+    const recorded: unknown[] = [];
+    server.use(
+      http.get(`${API_URL}/auth/me`, () =>
+        HttpResponse.json({ user: { id: "user-1", username: "film_fan", email: "film@example.com" } }),
+      ),
+      http.post(`${API_URL}/users/me/history`, async ({ request }) => {
+        recorded.push(await request.json());
+        return HttpResponse.json({ movieId: 574475, viewedAt: "2026-10-19T00:00:00.000Z" });
+      }),
+    );
+
+    render(
+      <AuthProvider>
+        <MemoryRouter initialEntries={["/movie/574475"]}>
+          <Routes>
+            <Route path="/movie/:id" element={<MovieDetail />} />
+          </Routes>
+        </MemoryRouter>
+      </AuthProvider>
+    );
+
+    await screen.findByText("Final Destination Bloodlines");
+    await waitFor(() => expect(recorded).toEqual([{ movieId: 574475 }]));
+  });
+
+  it("doesn't record anything for a logged-out visitor", async () => {
+    let recordCalls = 0;
+    let sessionChecked = false;
+    server.use(
+      http.get(`${API_URL}/auth/me`, () => {
+        sessionChecked = true;
+        return HttpResponse.json({ message: "Not authenticated" }, { status: 401 });
+      }),
+      http.post(`${API_URL}/users/me/history`, () => {
+        recordCalls += 1;
+        return HttpResponse.json({});
+      }),
+    );
+
+    render(
+      <AuthProvider>
+        <MemoryRouter initialEntries={["/movie/574475"]}>
+          <Routes>
+            <Route path="/movie/:id" element={<MovieDetail />} />
+          </Routes>
+        </MemoryRouter>
+      </AuthProvider>
+    );
+
+    await screen.findByText("Final Destination Bloodlines");
+    await waitFor(() => expect(sessionChecked).toBe(true));
+    expect(recordCalls).toBe(0);
   });
 
   // Test 8: a slow response for the previous movie doesn't replace the current one
