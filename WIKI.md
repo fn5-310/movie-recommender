@@ -159,7 +159,7 @@ Listed below are the current team members, and their contributions to the projec
 ## Dylan Liddle (*@DL-Eng-Acc*)
 - Improve README setup instructions for new contributors (PR: #28, Issue: #27)
 - AI recommendation card and graph overlay (PR: #25, Issue: #26, #2)
-- Code review on PRs(#29, #24)
+- Code review on PRs(#29, #24, #84)
 
 ## Shenol Peiris (*@nikopeiris*)
 - Feat/llm recommendation (PR: #4, Issue: #2)
