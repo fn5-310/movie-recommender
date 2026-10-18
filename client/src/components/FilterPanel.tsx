@@ -118,16 +118,28 @@ export default function FilterPanel({
     setGenreId(undefined);
     setYearFrom(MIN_YEAR);
     setYearTo(CURRENT_YEAR);
+    setLanguage(undefined);
     setRatingMin(0);
     setSort("popularity");
     clearActor();
   }
 
+  // The number inputs only enforce min/max on their spinner arrows, so typed years
+  // are tidied up when the field loses focus: blanks reset and the range can't invert.
+  function settleYearRange() {
+    const from = Number.isFinite(yearFrom) && yearFrom >= MIN_YEAR ? yearFrom : MIN_YEAR;
+    const to = Number.isFinite(yearTo) && yearTo >= MIN_YEAR ? Math.min(yearTo, CURRENT_YEAR) : CURRENT_YEAR;
+    setYearFrom(Math.min(from, to));
+    setYearTo(Math.max(from, to));
+  }
+
   const selectedGenre = MOVIE_GENRES.find((g) => g.id === genreId);
+  const selectedLanguage = MOVIE_LANGUAGES.find((lang) => lang.code === language);
   const hasActiveFilters =
     genreId !== undefined ||
     yearFrom !== MIN_YEAR ||
     yearTo !== CURRENT_YEAR ||
+    language !== undefined ||
     ratingMin > 0 ||
     selectedActor !== null;
 
@@ -205,6 +217,7 @@ export default function FilterPanel({
               max={yearTo}
               value={yearFrom}
               onChange={(e) => setYearFrom(Number(e.target.value))}
+              onBlur={settleYearRange}
             />
             <span>to</span>
             <input
@@ -214,6 +227,7 @@ export default function FilterPanel({
               max={CURRENT_YEAR}
               value={yearTo}
               onChange={(e) => setYearTo(Number(e.target.value))}
+              onBlur={settleYearRange}
             />
           </div>
         </div>
@@ -293,6 +307,15 @@ export default function FilterPanel({
               }}
             >
               {yearFrom}–{yearTo} ✕
+            </button>
+          )}
+          {selectedLanguage && (
+            <button
+              type="button"
+              className="chip"
+              onClick={() => setLanguage(undefined)}
+            >
+              {selectedLanguage.name} ✕
             </button>
           )}
           {ratingMin > 0 && (

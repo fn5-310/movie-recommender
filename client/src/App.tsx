@@ -11,9 +11,11 @@ import RandomButton from "./components/RandomButton.tsx";
 import { CURRENT_YEAR, MIN_YEAR } from "./constants/filters";
 import { writeStoredFilters, writeStoredQuery } from "./utils/searchStorage";
 import { useAuth } from "./hooks/useAuth.ts";
+import { useDocumentTitle } from "./hooks/useDocumentTitle.ts";
 
 function App() {
   const { user, isLoading: isAuthLoading, logout } = useAuth();
+  useDocumentTitle(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [logoutError, setLogoutError] = useState<string | null>(null);
 
@@ -98,7 +100,7 @@ function App() {
     }
   });
 
-  const { movies, isLoading, hasSearched, hasMore, loadMore } = useMovieResults(
+  const { movies, isLoading, hasSearched, hasMore, error, loadMore, retry } = useMovieResults(
     query,
     filters,
   );
@@ -117,6 +119,7 @@ function App() {
 
   const hasActiveFilters =
     filters.genre !== undefined ||
+    filters.language !== undefined ||
     filters.ratingMin !== undefined ||
     filters.castId !== undefined ||
     (filters.yearFrom !== undefined && filters.yearFrom !== MIN_YEAR) ||
@@ -225,7 +228,9 @@ function App() {
         isLoading={isLoading}
         hasSearched={hasSearched}
         hasMore={hasMore}
+        error={error}
         onLoadMore={loadMore}
+        onRetry={retry}
         onMovieClick={handleMovieClick}
       />
     </section>

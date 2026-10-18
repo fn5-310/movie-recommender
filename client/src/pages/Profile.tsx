@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 import "./Profile.css";
 
 export default function Profile() {
   const { user, isLoading, logout } = useAuth();
+  useDocumentTitle("Your profile");
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [logoutError, setLogoutError] = useState<string | null>(null);
