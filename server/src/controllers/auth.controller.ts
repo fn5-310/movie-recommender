@@ -20,6 +20,7 @@ export interface PublicUser {
 }
 
 export type UserResponse = { user: PublicUser } | ErrorResponse;
+export type SessionResponse = { user: PublicUser | null } | ErrorResponse;
 
 // Bodies are untrusted JSON, so every field is checked before use
 interface SignUpBody {
@@ -173,23 +174,35 @@ export function createAuthController(config: Pick<AppConfig, "isProduction">) {
     });
   };
 
-  const getCurrentUser: RequestHandler<{}, UserResponse> = async (req, res) => {
-    if (!req.session.userId) {
-      res.status(401).json({ message: "Not authenticated" });
-      return;
-    }
+  async function sessionUser(req: Request): Promise<PublicUser | null> {
+    if (!req.session.userId) return null;
+    const user = await User.findById(req.session.userId);
+    return user ? publicUser(user) : null;
+  }
 
+  // GET /api/users/me: the signed-in user as a resource, so no session is a 401.
+  const getCurrentUser: RequestHandler<{}, UserResponse> = async (req, res) => {
     try {
-      const user = await User.findById(req.session.userId);
+      const user = await sessionUser(req);
       if (!user) {
         res.status(401).json({ message: "Not authenticated" });
         return;
       }
-      res.json({ user: publicUser(user) });
+      res.json({ user });
     } catch (error) {
       handleAuthError(res, error);
     }
   };
 
-  return { signUp, logIn, logOut, getCurrentUser };
+  // GET /api/auth/me: every page load asks this, and being logged out is a normal
+  // answer rather than an error, so it is a 200 with no user.
+  const getSession: RequestHandler<{}, SessionResponse> = async (req, res) => {
+    try {
+      res.json({ user: await sessionUser(req) });
+    } catch (error) {
+      handleAuthError(res, error);
+    }
+  };
+
+  return { signUp, logIn, logOut, getCurrentUser, getSession };
 }
