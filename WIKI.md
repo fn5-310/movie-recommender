@@ -163,7 +163,7 @@ Listed below are the current team members, and their contributions to the projec
 
 ## Shenol Peiris (*@nikopeiris*)
 - Feat/llm recommendation (PR: #4, Issue: #2)
-- docs/updating-documentation by adding meetings mins and contributions (PR: , Issue: )
+- docs/updating-documentation by adding meetings mins and contributions (PR: #84, Issue: #83)
 - Code review on PRs(#28, #5)
 
 ## Kenny Geng (*@imke11*)
