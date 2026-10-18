@@ -23,7 +23,7 @@ function parsePort(value: string | undefined, fallback: number, name: string): n
 
 function nonEmpty(value: string | undefined): string | undefined {
   const trimmed = value?.trim();
-  return trimmed ? trimmed : undefined;
+  return trimmed || undefined;
 }
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
