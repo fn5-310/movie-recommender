@@ -1,10 +1,14 @@
 import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
+import ViewingHistory from "../components/ViewingHistory";
+import ThemeSwitcher from "../components/ThemeSwitcher";
 import "./Profile.css";
 
 export default function Profile() {
   const { user, isLoading, logout } = useAuth();
+  useDocumentTitle("Your profile");
   const navigate = useNavigate();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [logoutError, setLogoutError] = useState<string | null>(null);
@@ -66,12 +70,17 @@ export default function Profile() {
         </dl>
       </section>
 
+      <section className="profile-card" aria-labelledby="appearance-heading">
+        <h2 id="appearance-heading">Appearance</h2>
+        <ThemeSwitcher />
+      </section>
+
       <section
         className="profile-card"
         aria-labelledby="viewing-history-heading"
       >
         <h2 id="viewing-history-heading">Viewing history</h2>
-        <p>Viewing history is coming soon.</p>
+        <ViewingHistory />
       </section>
       {logoutError && (
         <p className="profile-error" role="alert">
