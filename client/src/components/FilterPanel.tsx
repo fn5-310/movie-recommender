@@ -4,6 +4,11 @@ import { CURRENT_YEAR, MIN_YEAR } from "../constants/filters";
 import { MOVIE_LANGUAGES } from "../constants/languages";
 import { searchPerson, type Person } from "../api/searchPerson";
 import { isSortOption, type DiscoverFilters, type SortOption } from "../api/discoverMovies";
+import {
+  clearStoredActorName,
+  readStoredActorName,
+  writeStoredActorName,
+} from "../utils/searchStorage";
 import "./FilterPanel.css";
 
 const SORT_OPTIONS: {
@@ -42,14 +47,13 @@ export default function FilterPanel({
   // initialFilters only carries a numeric castId (see DiscoverFilters),
   // not a display name, so the actor's name is separately round-tripped
   // through sessionStorage to restore the input/chip text correctly.
-  const [actorQuery, setActorQuery] = useState(()=> {if (!initialFilters?.castId) return "";
-    const saved = sessionStorage.getItem("movieSearchActorName");
-    return saved ?? "";
-  });
+  const [actorQuery, setActorQuery] = useState(() =>
+    initialFilters?.castId ? readStoredActorName() : "",
+  );
   const [actorResults, setActorResults] = useState<Person[]>([]);
   const [selectedActor, setSelectedActor] = useState<Person | null>(() => {
     if (!initialFilters?.castId) return null;
-    const savedName = sessionStorage.getItem("movieSearchActorName");
+    const savedName = readStoredActorName();
     if (!savedName) return null;
     // Only the id and name are saved; the rest isn't needed to show the chip.
     return { id: initialFilters.castId, name: savedName, profileUrl: null, knownFor: null };
@@ -104,14 +108,14 @@ export default function FilterPanel({
     setSelectedActor(person);
     setActorQuery(person.name);
     setActorResults([]);
-    sessionStorage.setItem("movieSearchActorName", person.name);
+    writeStoredActorName(person.name);
   }
 
   function clearActor() {
     setSelectedActor(null);
     setActorQuery("");
     setActorResults([]);
-    sessionStorage.removeItem("movieSearchActorName");
+    clearStoredActorName();
   }
 
   function clearAll() {
