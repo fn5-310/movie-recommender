@@ -114,7 +114,7 @@ There was no defined protocol for how to conduct a code review. While we believe
 # Refactor
 The migration was an effective modernization rather than a simple file-extension change. It improved compile-time correctness, module separation, testability, external-service resilience, configuration handling, and CI enforcement while preserving the existing backend behavior.
 
-Its strongest maintainability benefit is the introduction of explicit, typed boundaries between the application, database, controller, routing, and TMDB layers. The successful type-check, build, and 62-test backend suite provide good evidence that the refactor is functioning correctly. Further improvement would mainly involve deeper runtime validation of TMDB payloads and continuing to add typed integration coverage as new backend features are introduced.
+Its strongest maintainability benefit is the introduction of explicit, typed boundaries between the application, database, controller, routing, and TMDB layers. The successful type-check, build, and 122-test backend suite provide good evidence that the refactor is functioning correctly. Further improvement would mainly involve deeper runtime validation of TMDB payloads and continuing to add typed integration coverage as new backend features are introduced.
 
 --
 Listed below are the current team members, and their contributions to the project (not including code reviews):
