@@ -122,7 +122,7 @@ describe("MovieDetail", () => {
   });
 
   // Test 7: back button goes back
-  it('navigates back to the home page when "Back to Search" is clicked', async () => {
+  it("goes back to the previous page when Back is clicked", async () => {
     const user = userEvent.setup();
 
     render(
@@ -138,11 +138,49 @@ describe("MovieDetail", () => {
     );
 
     await screen.findByText("Final Destination Bloodlines");
-    const backButton = screen.getByText(/← Back to Search/i);
+    const backButton = screen.getByRole("button", { name: "← Back" });
     await user.click(backButton);
 
     // confirms page is exactly on root
     expect(screen.getByTestId("location-display").textContent).toBe("/");
+  });
+
+  it("goes to the homepage when Back is clicked on a movie opened from a link", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <AuthProvider>
+        <MemoryRouter initialEntries={["/movie/574475"]}>
+          <LocationDisplay/>
+          <Routes>
+            <Route path="/" element={<App />} />
+            <Route path="/movie/:id" element={<MovieDetail />} />
+          </Routes>
+        </MemoryRouter>
+      </AuthProvider>
+    );
+
+    await screen.findByText("Final Destination Bloodlines");
+    await user.click(screen.getByRole("button", { name: "← Back" }));
+
+    expect(screen.getByTestId("location-display").textContent).toBe("/");
+  });
+
+  it("doesn't call a server error a missing movie", async () => {
+    server.use(
+      http.get("https://api.themoviedb.org/3/movie/:id", () => new HttpResponse(null, { status: 500 })),
+    );
+
+    render(
+      <MemoryRouter initialEntries={["/movie/574475"]}>
+        <Routes>
+          <Route path="/movie/:id" element={<MovieDetail />} />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    expect(await screen.findByText("Couldn't load this movie. Please try again.")).toBeInTheDocument();
+    expect(screen.queryByText("404")).not.toBeInTheDocument();
   });
 
   // Test 8: a slow response for the previous movie doesn't replace the current one

@@ -1,10 +1,12 @@
 import type { TmdbMovieDetails } from "../types/tmdb";
 import { tmdbGet } from "./tmdb";
 
+export const MOVIE_NOT_FOUND = "Movie not found";
+
 /**
  * Full details for one movie, including its cast.
- * Throws "Movie not found" for any non-2xx response; the detail page shows
- * its 404 view for that message.
+ * Throws MOVIE_NOT_FOUND for a 404 (the detail page shows its 404 view for it)
+ * and a general message for any other failed response.
  */
 export async function fetchMovieDetails(
   movieId: string | number,
@@ -13,6 +15,7 @@ export async function fetchMovieDetails(
   return tmdbGet<TmdbMovieDetails>(`/movie/${movieId}`, {
     params: { append_to_response: "credits" },
     signal,
-    failureMessage: () => "Movie not found",
+    failureMessage: (status) =>
+      status === 404 ? MOVIE_NOT_FOUND : "Couldn't load this movie. Please try again.",
   });
 }
