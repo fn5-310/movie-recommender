@@ -16,6 +16,18 @@ function requestedUrl(fetchMock: Mock<typeof fetch>): URL {
 }
 
 describe("createTmdbClient", () => {
+  it("sends a read access token as a Bearer header instead of api_key", async () => {
+    const token = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJ0ZXN0In0.c2lnbmF0dXJl";
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(Response.json(pageOf([movie(1)])));
+
+    await createTmdbClient(token, fetchMock).discover({});
+
+    expect(requestedUrl(fetchMock).searchParams.has("api_key")).toBe(false);
+    expect(fetchMock).toHaveBeenCalledWith(expect.any(URL), {
+      headers: { accept: "application/json", Authorization: `Bearer ${token}` },
+    });
+  });
+
   describe("discover", () => {
     it("builds the discover URL with api_key and params", async () => {
       const { client, fetchMock } = setup(Response.json(pageOf([movie(1)])));

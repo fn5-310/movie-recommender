@@ -1,4 +1,5 @@
 import { HttpError } from "../errors.js";
+import { applyTmdbCredential } from "./credentials.js";
 import {
   isTmdbMovieDetails,
   isTmdbPaginated,
@@ -17,14 +18,14 @@ export interface TmdbClient {
 export function createTmdbClient(apiKey: string, fetchImpl: typeof fetch = fetch): TmdbClient {
   async function get(path: string, params: Record<string, string> = {}): Promise<unknown> {
     const url = new URL(`${TMDB_BASE_URL}${path}`);
-    url.searchParams.set("api_key", apiKey);
+    const credentialHeaders = applyTmdbCredential(url, apiKey);
     for (const [key, value] of Object.entries(params)) {
       url.searchParams.set(key, value);
     }
 
     let res: Response;
     try {
-      res = await fetchImpl(url, { headers: { accept: "application/json" } });
+      res = await fetchImpl(url, { headers: { accept: "application/json", ...credentialHeaders } });
     } catch {
       throw new HttpError(502, "TMDB is unreachable");
     }

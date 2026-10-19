@@ -1,3 +1,5 @@
+import { applyTmdbCredential } from '../tmdb/credentials.js';
+
 export interface RecommendedMovie {
   title: string;
   releaseYear: number | string;
@@ -34,7 +36,7 @@ export const enrichMoviesWithImages = async (
     movies.map(async (movie): Promise<RecommendedMovie> => {
       try {
         const searchUrl = new URL('https://api.themoviedb.org/3/search/movie');
-        searchUrl.searchParams.append('api_key', tmdbApiKey);
+        const headers = applyTmdbCredential(searchUrl, tmdbApiKey);
         searchUrl.searchParams.append('query', movie.title);
 
         if (movie.releaseYear) {
@@ -45,6 +47,7 @@ export const enrichMoviesWithImages = async (
         }
 
         const response = await fetch(searchUrl.toString(), {
+          headers,
           signal: AbortSignal.timeout(10000),
         });
 

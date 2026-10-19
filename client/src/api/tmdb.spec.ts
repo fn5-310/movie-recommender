@@ -2,7 +2,72 @@ import { http, HttpResponse } from "msw";
 import { describe, it, expect, vi } from "vitest";
 import { server } from "../test/server";
 import type { TmdbMovieResult } from "../types/tmdb";
-import { getTmdbApiKey, isAbortError, normalizeMovie, tmdbGet, tmdbImageUrl } from "./tmdb";
+import {
+  applyTmdbCredential,
+  getTmdbApiKey,
+  isAbortError,
+  normalizeMovie,
+  tmdbGet,
+  tmdbImageUrl,
+} from "./tmdb";
+
+// Shaped like TMDB's "API Read Access Token" (a JWT); not a real token.
+const READ_ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJ0ZXN0In0.c2lnbmF0dXJl";
+
+describe("applyTmdbCredential", () => {
+  it("sends a v3 API key as the api_key query parameter", () => {
+    const url = new URL("https://api.themoviedb.org/3/movie/1");
+
+    expect(applyTmdbCredential(url, "0123456789abcdef0123456789abcdef")).toEqual({});
+    expect(url.searchParams.get("api_key")).toBe("0123456789abcdef0123456789abcdef");
+  });
+
+  it("sends a read access token as a Bearer header instead", () => {
+    const url = new URL("https://api.themoviedb.org/3/movie/1");
+
+    expect(applyTmdbCredential(url, READ_ACCESS_TOKEN)).toEqual({
+      Authorization: `Bearer ${READ_ACCESS_TOKEN}`,
+    });
+    expect(url.searchParams.has("api_key")).toBe(false);
+  });
+});
+
+describe("tmdbGet credentials", () => {
+  function captureRequest() {
+    const seen: { url?: URL; authorization?: string | null } = {};
+    server.use(
+      http.get("https://api.themoviedb.org/3/movie/1", ({ request }) => {
+        seen.url = new URL(request.url);
+        seen.authorization = request.headers.get("Authorization");
+        return HttpResponse.json({ id: 1 });
+      }),
+    );
+    return seen;
+  }
+
+  it("uses the api_key parameter for a v3 key", async () => {
+    const seen = captureRequest();
+
+    await tmdbGet("/movie/1", { failureMessage: String });
+
+    expect(seen.url?.searchParams.get("api_key")).toBe("test-key");
+    expect(seen.authorization).toBeNull();
+  });
+
+  it("uses a Bearer header for a read access token", async () => {
+    vi.stubEnv("VITE_TMDB_API_KEY", READ_ACCESS_TOKEN);
+    const seen = captureRequest();
+
+    try {
+      await tmdbGet("/movie/1", { failureMessage: String });
+    } finally {
+      vi.stubEnv("VITE_TMDB_API_KEY", "test-key");
+    }
+
+    expect(seen.authorization).toBe(`Bearer ${READ_ACCESS_TOKEN}`);
+    expect(seen.url?.searchParams.has("api_key")).toBe(false);
+  });
+});
 
 describe("getTmdbApiKey", () => {
   it("returns the configured key", () => {

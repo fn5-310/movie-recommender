@@ -174,4 +174,17 @@ describe('enrichMoviesWithImages Service', () => {
       expect(result[1]?.imageUrl).toBe(DEFAULT_POSTER_IMAGE);
     });
   });
+
+  it('sends a read access token as a Bearer header instead of api_key', async () => {
+    const token = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJ0ZXN0In0.c2lnbmF0dXJl';
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(new Response(JSON.stringify({ results: [] }), { status: 200 }));
+
+    await enrichMoviesWithImages([mockMovies[0]!], token);
+
+    const [url, init] = fetchSpy.mock.calls[0]!;
+    expect(new URL(String(url)).searchParams.has('api_key')).toBe(false);
+    expect(init?.headers).toEqual({ Authorization: `Bearer ${token}` });
+  });
 });

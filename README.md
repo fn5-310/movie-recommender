@@ -62,7 +62,7 @@ copy .env.example .env    # Windows
 
 > **Windows users:** make sure the file is named exactly `.env`. If you create it in Notepad, set "Save as type" to **All Files**, otherwise it is saved as `.env.txt` and will not be found.
 
-**TMDB key:** create a free account at [themoviedb.org](https://www.themoviedb.org/signup), then go to **Settings → API**. Use the value labelled **API Key** (the short, 32-character v3 key), *not* the longer "API Read Access Token". The app sends the key as an `api_key` query parameter, so the read access token will cause every TMDB request to fail with `401`.
+**TMDB key:** create a free account at [themoviedb.org](https://www.themoviedb.org/signup), then go to **Settings → API**. Use either the value labelled **API Key** (the short, 32-character v3 key) or the longer **API Read Access Token**. The app sends a v3 key as an `api_key` query parameter and a read access token as an `Authorization: Bearer` header, so both work.
 
 **MongoDB:** the website uses MongoDB for user profiles, which requires login credentials and for your current IP address to be allowed in MongoDB Atlas. Please get in contact on Discord or at swal289@aucklanduni.ac.nz. MongoDB is optional for working on features that don't use accounts (see degraded mode below).
 
